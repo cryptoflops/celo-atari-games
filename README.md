@@ -1,6 +1,6 @@
 # Celo Atari Games
 
-A MiniPay-native arcade game platform on Celo mainnet, built for the Celo Proof of Ship rewards.
+Arcade mini-game platform on Celo mainnet, built for the Celo MiniPay.
 
 ## Project Structure
 
