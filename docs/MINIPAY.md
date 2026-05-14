@@ -1,6 +1,6 @@
 # MiniPay Integration
 
-Celo Arcade is designed to be a native MiniPay application.
+Celo Atari Games is designed to be a native MiniPay application.
 
 ## Detection
 We use the `window.ethereum.isMiniPay` flag injected by the MiniPay browser.

@@ -1,10 +1,10 @@
-# Celo Arcade Documentation
+# Celo Atari Games Documentation
 
-Welcome to the Celo Arcade documentation. This project was built for the Celo Proof of Ship rewards program.
+Welcome to the Celo Atari Games documentation.
 
 ## Architecture Overview
 
-Celo Arcade uses a modern Web3 stack:
+Celo Atari Games uses a modern Web3 stack:
 - **Frontend**: React + Vite + TailwindCSS + Wagmi
 - **Backend API**: Fastify + PostgreSQL + Redis (Upstash)
 - **Smart Contracts**: Solidity + Hardhat + OpenZeppelin
