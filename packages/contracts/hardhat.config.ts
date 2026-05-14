@@ -9,10 +9,10 @@ const privateKey = process.env.CELO_PRIVATE_KEY || "0x00000000000000000000000000
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
   networks: {
-    alfajores: {
-      url: "https://alfajores-forno.celo-testnet.org",
+    celoSepolia: {
+      url: "https://forno.celo-sepolia.celo-testnet.org",
       accounts: [privateKey],
-      chainId: 44787,
+      chainId: 11142220,
     },
     celoMainnet: {
       url: "https://forno.celo.org",
@@ -22,16 +22,16 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      alfajores: process.env.CELOSCAN_API_KEY || "",
+      celoSepolia: process.env.CELOSCAN_API_KEY || "",
       celoMainnet: process.env.CELOSCAN_API_KEY || "",
     },
     customChains: [
       {
-        network: "alfajores",
-        chainId: 44787,
+        network: "celoSepolia",
+        chainId: 11142220,
         urls: {
-          apiURL: "https://api-alfajores.celoscan.io/api",
-          browserURL: "https://alfajores.celoscan.io",
+          apiURL: "https://celo-sepolia.blockscout.com/api",
+          browserURL: "https://celo-sepolia.blockscout.com",
         },
       },
       {
@@ -43,6 +43,9 @@ const config: HardhatUserConfig = {
         },
       },
     ],
+  },
+  sourcify: {
+    enabled: true,
   },
 };
 

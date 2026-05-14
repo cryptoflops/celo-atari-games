@@ -1,0 +1,15 @@
+{
+  "name": "@celo-arcade/game-engine",
+  "version": "1.0.0",
+  "description": "Shared game engine logic for frontend and backend",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

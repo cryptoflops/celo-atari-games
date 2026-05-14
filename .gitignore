@@ -9,3 +9,5 @@ typechain
 typechain-types
 artifacts
 cache
+.dev.vars
+.wrangler/

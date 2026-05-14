@@ -1,0 +1,17 @@
+name = "celo-atari-games-api"
+main = "src/index.ts"
+compatibility_date = "2024-05-14"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+VITE_CHAIN_ID = "42220"
+VITE_SCORE_REGISTRY_ADDRESS = "0x16Dc6c7152cD19eCeb20948Ea7C2bdED3F84eCBC"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "e3046d5d21f04b8abfbbc329eeda1c7e"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "celo-arcade-db"
+database_id = "04a8ae6f-e91f-4c14-840d-de8dc74ce0fb"
