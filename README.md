@@ -22,4 +22,3 @@ This is a monorepo containing:
    npm run dev:web
    npm run dev:api
    ```
-
