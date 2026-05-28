@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased] - 2026-05-23
+## [Unreleased] - 2026-05-28
 
 ### Changed
-- Updated dependencies to latest stable
-- Reduced bundle size by tree-shaking
+- Refactored wallet connection flow
+- Cleaned up unused imports
 
 ### Fixed
-- Fixed edge case in balance display
+- Corrected gas estimation for Celo L2
