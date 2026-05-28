@@ -1,6 +1,6 @@
 # celo-atari-games Deployment Notes
 
-Last verified: 2026-05-23T00:43:51.544Z
+Last verified: 2026-05-28T00:36:06.458Z
 
 ## Prerequisites
 - Node.js >= 18
@@ -12,4 +12,4 @@ npm install
 npm run dev
 ```
 
-> Build hash: kuunsfb4
+> Build hash: d0ktv84u
