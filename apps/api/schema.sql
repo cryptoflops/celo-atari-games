@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS offchain_scores (
     player_address TEXT REFERENCES players(address),
     score INTEGER NOT NULL,
     session_id TEXT NOT NULL UNIQUE,
+    game_id TEXT NOT NULL DEFAULT 'gas-gobbler',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

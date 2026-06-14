@@ -1,82 +1,76 @@
 
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { config } from './config/wagmi';
 import { Home } from './pages/Home';
 import { Play } from './pages/Play';
 import { Leaderboard } from './pages/Leaderboard';
+import { Profile } from './pages/Profile';
 import { WalletStatus } from './components/WalletStatus';
 import { TemporalBackground } from './components/TemporalBackground';
 
 const queryClient = new QueryClient();
+
+const NavIcon: React.FC<{ icon: string, label: string, to: string, active: boolean }> = ({ icon, label, to, active }) => (
+  <Link to={to} className={`flex flex-col items-center gap-1 flex-1 py-2.5 transition-all relative ${active ? 'text-primary scale-105' : 'text-white/40 hover:text-white/70'}`}>
+    <span className="text-xl drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]">{icon}</span>
+    <span className="font-arcade text-[6px] tracking-tighter uppercase">{label}</span>
+    {active && (
+      <span className="absolute bottom-0.5 w-6 h-0.5 bg-primary rounded-full shadow-[0_0_6px_var(--color-primary)]" />
+    )}
+  </Link>
+);
+
+const BottomNav: React.FC = () => {
+  const location = useLocation();
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-white/10 flex justify-around px-2 pb-safe">
+      <NavIcon icon="🎮" label="Games" to="/" active={location.pathname === '/'} />
+      <NavIcon icon="📊" label="Scores" to="/leaderboard" active={location.pathname === '/leaderboard'} />
+      <NavIcon icon="👤" label="Profile" to="/profile" active={location.pathname === '/profile'} />
+    </nav>
+  );
+};
 
 function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <TemporalBackground />
-          <div className="min-h-screen text-cream font-sans relative z-10 flex flex-col">
-            {/* Navigation Header — arcade machine top strip */}
-            <header className="w-full px-4 sm:px-6 py-3 flex items-center justify-between border-b-[3px] border-[#2d2440] sticky top-0 z-50"
-              style={{
-                background: 'linear-gradient(180deg, #1a1024, #120b1a)',
-                boxShadow: '0 4px 0 #0a0614',
-              }}
-            >
-              <Link to="/" className="flex items-center gap-3 group">
-                <div className="w-8 h-8 rounded-sm bg-primary flex items-center justify-center text-secondary font-black text-sm"
-                  style={{ boxShadow: '0 3px 0 #8a8c1a' }}
-                >
-                  G
-                </div>
-                <span className="font-arcade text-[10px] sm:text-xs tracking-wider hidden sm:block text-cream">
-                  CELO ATARI GAMES
+          <div className="min-h-screen relative flex flex-col pb-20">
+            <TemporalBackground />
+            
+            {/* Tech Status Bar */}
+            <header className="w-full px-6 py-4 flex items-center justify-between sticky top-0 z-50 glass-panel border-b border-white/5 backdrop-blur-xl">
+              <Link to="/" className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
+                <span className="font-arcade text-[10px] tracking-widest text-primary text-glow-primary">
+                  CELO ATARI
                 </span>
               </Link>
               
-              <div className="flex items-center gap-3">
-                <nav className="hidden sm:flex items-center gap-2 mr-3">
-                  <Link to="/play" className="hw-chip hover:text-primary transition-colors text-xs uppercase tracking-wider">
-                    PLAY
-                  </Link>
-                  <Link to="/leaderboard" className="hw-chip hover:text-accent transition-colors text-xs uppercase tracking-wider">
-                    LEADERBOARD
-                  </Link>
-                </nav>
+              <div className="flex items-center gap-4">
+                <div className="hidden sm:flex items-center gap-6 mr-4">
+                  <span className="tech-label opacity-40">System: <span className="text-success text-glow-success font-bold">Operational</span></span>
+                  <span className="tech-label opacity-40">Network: <span className="text-secondary text-glow-primary">Mainnet</span></span>
+                </div>
                 <WalletStatus />
               </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 w-full max-w-5xl mx-auto relative px-4 sm:px-6">
-              <div className="py-8">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/play" element={<Play />} />
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                </Routes>
-              </div>
+            <main className="flex-1 w-full max-w-5xl mx-auto relative px-4">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/play/:gameId" element={<Play />} />
+                <Route path="/play" element={<Play />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
             </main>
-            
-            {/* Footer — arcade cabinet base */}
-            <footer className="w-full py-4 flex flex-row flex-wrap items-center justify-center gap-4 text-xs border-t-[3px] border-[#2d2440] mt-auto"
-              style={{
-                background: 'linear-gradient(180deg, #120b1a, #0a0614)',
-                boxShadow: '0 -4px 0 #0a0614',
-              }}
-            >
-              <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="hw-chip hover:text-primary transition-colors">
-                [GitHub]
-              </a>
-              <a href="https://docs.minipay.xyz" target="_blank" rel="noopener noreferrer" className="hw-chip hover:text-primary transition-colors">
-                [MiniPay Docs]
-              </a>
-              <a href="https://talent.app/~/earn/celo-proof-of-ship" target="_blank" rel="noopener noreferrer" className="hw-chip hover:text-primary transition-colors">
-                [Celo Proof of Ship]
-              </a>
-            </footer>
+
+            <BottomNav />
           </div>
         </Router>
       </QueryClientProvider>
@@ -85,3 +79,4 @@ function App() {
 }
 
 export default App;
+

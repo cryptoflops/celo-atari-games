@@ -4,8 +4,8 @@ async function main() {
   const registryAddress = process.env.VITE_SCORE_REGISTRY_ADDRESS;
   if (!registryAddress) throw new Error("VITE_SCORE_REGISTRY_ADDRESS not set");
 
-  const GasGobblerScoreRegistry = await ethers.getContractFactory("GasGobblerScoreRegistry");
-  const registry = GasGobblerScoreRegistry.attach(registryAddress);
+  const GameScoreRegistry = await ethers.getContractFactory("GameScoreRegistry");
+  const registry = GameScoreRegistry.attach(registryAddress) as any;
 
   // The address derived from SIGNER_PRIVATE_KEY
   const apiSignerAddress = "0x30171E8913885cC05fCC21f77F7E501700023331";

@@ -56,209 +56,195 @@ const MentoInvadersPreview: React.FC = () => (
       <div key={`inv-${i}`} className="pixel" style={{
         left: `${l}%`, top: '18%', width: 12, height: 10,
         background: i % 2 === 0 ? '#7CC0FF' : '#B490FF',
-        boxShadow: '-4px 4px 0 currentColor, 4px 4px 0 currentColor',
       }} />
     ))}
-    {/* Player ship */}
-    <div className="pixel" style={{ left: '46%', top: '78%', width: 16, height: 10, background: '#FCFF52', clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
-    {/* Bullet */}
-    <div className="pixel" style={{ left: '49%', top: '55%', width: 4, height: 12, background: '#56DF7C' }} />
+    {/* Player */}
+    <div className="pixel" style={{ left: '44%', top: '78%', width: 18, height: 12, background: '#FCFF52' }} />
   </div>
 );
 
-/* ── Home Page ─────────────────────────────────────── */
+const CabinetCard: React.FC<{ 
+  id: string, 
+  title: string, 
+  status: 'LIVE' | 'BETA' | 'SOON', 
+  color: string, 
+  preview?: React.ReactNode,
+  logoUrl?: string
+}> = ({ id, title, status, color, preview, logoUrl }) => (
+
+  <div className="cabinet-container group">
+    <div className="cabinet" style={{ borderColor: color }}>
+      {/* Marquee */}
+      <div className="cabinet-marquee flex justify-between items-center px-4">
+        <span className="font-arcade text-[8px] text-white/50">{id}</span>
+        <div className="flex items-center gap-2">
+          <span className={`status-light ${
+            status === 'LIVE' ? 'status-light-live' : status === 'BETA' ? 'status-light-beta' : 'status-light-soon'
+          } ${status !== 'SOON' ? 'animate-pulse' : ''}`} />
+          <span className="tech-label">{status}</span>
+        </div>
+      </div>
+
+      {/* Screen Area */}
+      <div className="cabinet-screen-bezel">
+        <div className="cabinet-screen bg-black flex items-center justify-center p-4">
+          {logoUrl ? (
+            <img src={logoUrl} alt={title} className="max-w-full max-h-full object-contain" />
+          ) : (
+            <div className="text-white/20 font-arcade text-[10px] text-center">
+              {preview || title.toUpperCase()}
+            </div>
+          )}
+          {/* Scanline effect */}
+          <div className="absolute inset-0 pointer-events-none opacity-20 bg-[repeating-linear-gradient(0deg,transparent_0px,rgba(0,0,0,0.5)_2px,transparent_4px)]" />
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="cabinet-controls">
+        <div className="joystick-base">
+          <div className="joystick" />
+        </div>
+        <div className="control-btn-group">
+          <div className="control-btn yellow" />
+          <div className="control-btn red" />
+          <div className="control-btn blue" />
+        </div>
+      </div>
+
+      {/* Action Button */}
+      <div className="mt-6 px-2 pb-2">
+        <Link 
+          to={`/play/${id.toLowerCase().replace(' ', '-')}`}
+          className={`arcade-btn w-full text-[10px] py-4 transform transition-all ${
+            status === 'SOON' ? 'arcade-btn-locked opacity-50 pointer-events-none' : 'group-hover:-translate-y-1'
+          }`}
+        >
+          {status === 'SOON' ? 'COMING SOON' : `PLAY ${title.toUpperCase()}`}
+        </Link>
+      </div>
+    </div>
+  </div>
+);
 
 export const Home: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-2">
-      {/* Hero Section — cabinet marquee */}
-      <div className="relative mb-8 mt-8">
-        <h1 className="pixel-title relative z-10">
-          CELO ATARI<br className="sm:hidden" /> GAMES
+    <div className="flex flex-col items-center py-12 px-4 max-w-5xl mx-auto w-full animate-in fade-in duration-700">
+      
+      {/* Hero Title */}
+      <div className="text-center mb-12">
+        <h1 className="pixel-title text-4xl sm:text-6xl mb-6 tracking-widest">
+          CELO ATARI GAMES
         </h1>
+        <p className="text-white/70 font-mono text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+          4 retro mini-games for MiniPay.<br/>
+          Play fast rounds, save scores on Celo, and secure your spot on the blockchain.
+        </p>
       </div>
-      
-      <p className="text-sm sm:text-base text-sand mb-10 max-w-xl font-mono leading-relaxed">
-        4 retro mini-games for MiniPay.<br/>
-        Play fast rounds, save scores on Celo, climb the leaderboard.
-      </p>
-      
-      {/* CTAs — Prosperity Yellow primary, Forest secondary */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md mx-auto mb-16">
-        <Link to="/play" className="arcade-btn flex-1 text-sm">
+
+      {/* Primary Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-20 w-full max-w-md">
+        <Link to="/play/gas-gobbler" className="arcade-btn flex-1 text-center py-4">
           PLAY NOW
         </Link>
-        <Link to="/leaderboard" className="arcade-btn arcade-btn-secondary flex-1 text-sm">
+        <Link to="/leaderboard" className="arcade-btn-secondary flex-1 text-center py-4">
           LEADERBOARD
         </Link>
       </div>
-      
-      {/* Games Selection — machine label */}
-      <div className="w-full max-w-4xl mx-auto mb-20 text-left">
-        <div className="mb-6">
-          <span className="machine-label">Games Selection</span>
-          <div className="pixel-divider mt-4" />
+
+      {/* Games Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mb-24">
+        <CabinetCard 
+          id="GAS GOBBLER" 
+          title="Gas Gobbler" 
+          status="LIVE" 
+          color="#FCFF52"
+          logoUrl="/gas_gobbler_logo.png"
+          preview={<GasGobblerPreview />}
+        />
+        <CabinetCard 
+          id="MENTO INVADERS" 
+          title="Mento Invaders" 
+          status="BETA" 
+          color="#00f0ff"
+          preview={<MentoInvadersPreview />}
+        />
+        <CabinetCard 
+          id="BLOCK BREAKER" 
+          title="Block Breaker" 
+          status="SOON" 
+          color="#F72585"
+          preview={<BlockBreakerPreview />}
+        />
+        <CabinetCard 
+          id="STABLE SPRINT" 
+          title="Stable Sprint" 
+          status="SOON" 
+          color="#56DF7C"
+          preview={<StableSprintPreview />}
+        />
+      </div>
+
+      {/* Proof of Ship / Infrastructure Section */}
+      <div className="w-full">
+        <div className="inline-block glass-panel px-4 py-1.5 mb-4 shadow-[0_0_12px_rgba(0,240,255,0.1)]">
+          <span className="font-arcade text-[8px] text-primary tracking-widest text-glow-primary">PROOF OF SHIP</span>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          
-          {/* Game 1: Gas Gobbler — LIVE, yellow frame */}
-          <div className="cartridge">
-            <div className="cartridge-strip" />
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-mono text-[10px] text-[#655947] tracking-widest">GAME-01</span>
-                <div className="flex items-center gap-2">
-                  <span className="status-light status-light-live" />
-                  <span className="font-mono text-[10px] text-success uppercase tracking-widest font-bold">Live</span>
+        
+        <div className="glass-panel p-8 border border-white/10 shadow-lg relative overflow-hidden">
+          {/* Subtle light pulse effect */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            {/* Infrastructure */}
+            <div>
+              <h3 className="tech-label mb-6 text-white/40 border-b border-white/5 pb-2">Infrastructure</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                  <span className="tech-label text-white/60">Frontend</span>
+                  <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="tech-label font-bold text-white/90 underline hover:text-primary transition-colors">GitHub</a>
+                </div>
+                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                  <span className="tech-label text-white/60">Contracts</span>
+                  <a href="https://talent.app/" target="_blank" rel="noopener noreferrer" className="tech-label font-bold text-white/90 underline hover:text-primary transition-colors">Talent App</a>
+                </div>
+                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                  <span className="tech-label text-white/60">Network</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shadow-[0_0_6px_var(--color-success)]" />
+                    <span className="tech-label font-bold text-success text-glow-success">Celo Mainnet</span>
+                  </div>
                 </div>
               </div>
-              <h3 className="font-arcade text-sm text-cream mb-2">Gas Gobbler</h3>
-              <GasGobblerPreview />
-              <p className="text-sand text-xs mb-3 font-mono">
-                Eat gas orbs. Dodge failed transactions. Survive the mempool.
-              </p>
-              <div className="text-[10px] font-mono text-[#655947] mb-4 tracking-wider">
-                ⏱ 30 sec rounds &nbsp;·&nbsp; ⛓ On-chain score save
-              </div>
-              <Link to="/play" className="arcade-btn w-full text-xs py-3">
-                Play Gas Gobbler
-              </Link>
             </div>
-          </div>
 
-          {/* Game 2: Block Breaker — LOCKED */}
-          <div className="cartridge cartridge-locked">
-            <div className="cartridge-strip" style={{ opacity: 0.3 }} />
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-mono text-[10px] text-[#655947] tracking-widest">GAME-02</span>
-                <div className="flex items-center gap-2">
-                  <span className="status-light status-light-soon" />
-                  <span className="font-mono text-[10px] text-[#655947] uppercase tracking-widest">Coming Soon</span>
-                </div>
+            {/* MiniPay */}
+            <div>
+              <h3 className="tech-label mb-6 text-white/40 border-b border-white/5 pb-2">MiniPay Features</h3>
+              <div className="space-y-3">
+                {[
+                  'Automatic Wallet Connection',
+                  'Mobile Safe-Area Rendering',
+                  'Optimized Touch Controls',
+                  'Stablecoin Ready'
+                ].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="text-success text-xs font-bold">✓</span>
+                    <span className="tech-label text-white/80">{feature}</span>
+                  </div>
+                ))}
               </div>
-              <h3 className="font-arcade text-sm text-sand mb-2">Block Breaker</h3>
-              <BlockBreakerPreview />
-              <p className="text-[#655947] text-xs mb-3 font-mono">
-                Break Celo blocks before time runs out.
-              </p>
-              <div className="text-[10px] font-mono text-[#4a3f34] mb-4 tracking-wider">
-                ⏱ 60 sec rounds &nbsp;·&nbsp; 🏆 Leaderboard enabled
-              </div>
-              <button disabled className="arcade-btn arcade-btn-locked w-full text-xs py-3">
-                Locked
-              </button>
             </div>
-          </div>
 
-          {/* Game 3: Stable Sprint — LOCKED */}
-          <div className="cartridge cartridge-locked">
-            <div className="cartridge-strip" style={{ opacity: 0.3 }} />
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-mono text-[10px] text-[#655947] tracking-widest">GAME-03</span>
-                <div className="flex items-center gap-2">
-                  <span className="status-light status-light-soon" />
-                  <span className="font-mono text-[10px] text-[#655947] uppercase tracking-widest">Coming Soon</span>
-                </div>
-              </div>
-              <h3 className="font-arcade text-sm text-sand mb-2">Stable Sprint</h3>
-              <StableSprintPreview />
-              <p className="text-[#655947] text-xs mb-3 font-mono">
-                Collect cUSD, avoid volatility traps.
-              </p>
-              <div className="text-[10px] font-mono text-[#4a3f34] mb-4 tracking-wider">
-                ⏱ 45 sec rounds &nbsp;·&nbsp; 📱 MiniPay-ready
-              </div>
-              <button disabled className="arcade-btn arcade-btn-locked w-full text-xs py-3">
-                Locked
-              </button>
-            </div>
           </div>
-
-          {/* Game 4: Mento Invaders — BETA, blue frame */}
-          <div className="cartridge cartridge-beta">
-            <div className="cartridge-strip" style={{ background: 'repeating-linear-gradient(90deg, #7CC0FF 0 12px, #1a1024 12px 18px)' }} />
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-mono text-[10px] text-[#655947] tracking-widest">GAME-04</span>
-                <div className="flex items-center gap-2">
-                  <span className="status-light status-light-beta" />
-                  <span className="font-mono text-[10px] text-accent uppercase tracking-widest font-bold">Beta</span>
-                </div>
-              </div>
-              <h3 className="font-arcade text-sm text-cream mb-2">Mento Invaders</h3>
-              <MentoInvadersPreview />
-              <p className="text-sand text-xs mb-3 font-mono">
-                Defend the stablecoin pool from incoming anomalies.
-              </p>
-              <div className="text-[10px] font-mono text-[#655947] mb-4 tracking-wider">
-                ⏱ Survival Mode &nbsp;·&nbsp; 👾 Classic Shooter
-              </div>
-              <button disabled className="arcade-btn arcade-btn-accent w-full text-xs py-3">
-                Access Beta Soon
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      {/* Proof of Ship Section — deep purple bg, Forest border */}
-      <div className="w-full max-w-4xl mx-auto text-left mb-12">
-        <div className="mb-6">
-          <span className="machine-label">Proof of Ship</span>
-          <div className="pixel-divider mt-4" />
-        </div>
-        <div className="cartridge p-0">
-          <div className="cartridge-strip" />
-          <div className="flex flex-col sm:flex-row gap-0">
-            <div className="flex-1 p-6">
-              <h3 className="font-arcade text-[10px] text-sand mb-4 tracking-widest">Infrastructure</h3>
-              <ul className="space-y-3 font-mono text-xs">
-                <li className="flex justify-between">
-                  <span className="text-[#655947]">Frontend</span>
-                  <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">GitHub</a>
-                </li>
-                <li className="flex justify-between">
-                  <span className="text-[#655947]">Contracts</span>
-                  <a href="https://celoscan.io/address/0x16Bbc09bFCCaae7D4C2EcD79C5d72AeA886D2bd0" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">CeloScan</a>
-                </li>
-                <li className="flex justify-between">
-                  <span className="text-[#655947]">Network</span>
-                  <span className="text-success font-bold flex items-center gap-2">
-                    <span className="status-light status-light-live" />
-                    Celo Mainnet
-                  </span>
-                </li>
-              </ul>
-            </div>
-            <div className="hidden sm:block w-px bg-[#2d2440]" />
-            <div className="sm:hidden h-px bg-[#2d2440] mx-6" />
-            <div className="flex-1 p-6">
-              <h3 className="font-arcade text-[10px] text-sand mb-4 tracking-widest">MiniPay</h3>
-              <ul className="space-y-3 font-mono text-xs">
-                <li className="flex items-center gap-2">
-                  <span className="text-success">✓</span>
-                  <span className="text-sand">Automatic Wallet Connection</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-success">✓</span>
-                  <span className="text-sand">Mobile Safe-Area Rendering</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-success">✓</span>
-                  <span className="text-sand">Optimized Touch Controls</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-success">✓</span>
-                  <span className="text-sand">Stablecoin Ready</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      {/* Footer Links */}
+      <div className="flex flex-wrap gap-6 justify-center mt-16 pb-12">
+        <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[GitHub]</a>
+        <a href="https://minipay.celo.org/" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[MiniPay Docs]</a>
+        <a href="https://celo.org/proof-of-ship" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[Celo Proof of Ship]</a>
       </div>
 
     </div>

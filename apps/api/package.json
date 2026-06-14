@@ -12,7 +12,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@celo-arcade/game-engine": "*",
+    "@celo-atari-games/gas-gobbler-engine": "*",
     "@cloudflare/workers-types": "^4.20260511.1",
     "hono": "^4.12.18",
     "viem": "^2.48.11",

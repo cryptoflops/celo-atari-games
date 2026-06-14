@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { privateKeyToAccount } from 'viem/accounts';
 import { z } from 'zod';
-import { HeadlessSimulator } from '@celo-arcade/game-engine';
+import { HeadlessSimulator } from '@celo-atari-games/gas-gobbler-engine';
 
 export interface Env {
   SESSIONS: KVNamespace;
@@ -63,6 +63,7 @@ app.post('/api/sessions/create', async (c) => {
 app.post('/api/scores/validate', async (c) => {
   const schema = z.object({
     sessionId: z.string(),
+    gameId: z.string().optional().default('gas-gobbler'),
     player: z.string().regex(/^0x[a-fA-F0-9]{40}$/, "Invalid address"),
     claimedScore: z.number().int().min(0),
     nonce: z.number().int().min(0),
@@ -79,7 +80,7 @@ app.post('/api/scores/validate', async (c) => {
     return c.json({ error: "Invalid request payload", details: parsed.error }, 400);
   }
 
-  const { sessionId, player, claimedScore, nonce, replayInputs } = parsed.data;
+  const { sessionId, gameId, player, claimedScore, nonce, replayInputs } = parsed.data;
 
   // Validate session
   const sessionDataStr = await c.env.SESSIONS.get(`session:${sessionId}`);
@@ -93,7 +94,7 @@ app.post('/api/scores/validate', async (c) => {
   }
 
   // Run Headless Simulator
-  const simResult = HeadlessSimulator.simulate(sessionData.seed, replayInputs);
+  const simResult = HeadlessSimulator.simulate(sessionData.seed, replayInputs as any);
   
   if (simResult.terminated) {
     return c.json({ error: "Replay exceeded maximum frame count" }, 400);
@@ -105,17 +106,28 @@ app.post('/api/scores/validate', async (c) => {
   
   const score = claimedScore;
 
-  const account = privateKeyToAccount(c.env.SIGNER_PRIVATE_KEY as `0x${string}`);
-
   try {
+    const account = privateKeyToAccount(c.env.SIGNER_PRIVATE_KEY as `0x${string}`);
     const deadline = Math.floor(Date.now() / 1000) + 3600; // 1 hour validity
     const chainId = parseInt(c.env.VITE_CHAIN_ID || '42220');
     
+    // Get game-specific registry address
+    const gameKey = gameId.toUpperCase().replace(/-/g, '_');
+    const env = c.env as any;
+    const registryAddress = (env[`VITE_SCORE_REGISTRY_ADDRESS_${gameKey}`] || c.env.VITE_SCORE_REGISTRY_ADDRESS) as `0x${string}`;
+    
+    if (!registryAddress) {
+      return c.json({ error: `Registry address not found for game: ${gameId}` }, 400);
+    }
+
+    // Format game name for domain (CamelCase + ScoreRegistry)
+    const formattedGameName = gameId.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('') + "ScoreRegistry";
+
     const domain = {
-      name: "GasGobblerScoreRegistry",
+      name: formattedGameName,
       version: "1",
       chainId,
-      verifyingContract: c.env.VITE_SCORE_REGISTRY_ADDRESS as `0x${string}`,
+      verifyingContract: registryAddress,
     };
 
     const types = {
@@ -147,98 +159,55 @@ app.post('/api/scores/validate', async (c) => {
     await c.env.SESSIONS.delete(`session:${sessionId}`);
     
     // Save to offchain_scores via D1
-    // First, ensure player exists
     await c.env.DB.prepare(`
       INSERT INTO players (address, username) 
       VALUES (?, ?) 
       ON CONFLICT(address) DO NOTHING
     `).bind(player.toLowerCase(), `Player_${player.slice(2, 8)}`).run();
 
-    // Insert score
     await c.env.DB.prepare(`
-      INSERT INTO offchain_scores (player_address, score, session_id)
-      VALUES (?, ?, ?)
-    `).bind(player.toLowerCase(), score, sessionId).run();
+      INSERT INTO offchain_scores (player_address, score, session_id, game_id)
+      VALUES (?, ?, ?, ?)
+    `).bind(player.toLowerCase(), score, sessionId, gameId).run();
 
     return c.json({
+      success: true,
+      score,
       signature,
-      deadline
+      deadline,
+      registryAddress
     });
 
   } catch (error: any) {
-    console.error(error);
-    return c.json({ error: "Failed to generate signature" }, 500);
+    console.error("Signature generation error:", error);
+    return c.json({ 
+      error: "Failed to generate signature", 
+      details: error.message,
+      stack: error.stack 
+    }, 500);
   }
 });
 
 // Leaderboard Endpoint
 app.get('/api/leaderboard', async (c) => {
   try {
-    const { createPublicClient, http, parseAbiItem } = await import('viem');
-    const { celo } = await import('viem/chains');
-
-    const client = createPublicClient({
-      chain: celo,
-      transport: http()
+    const query = `
+      SELECT 
+        p.address, 
+        p.username, 
+        COALESCE(SUM(s.score), 0) as score 
+      FROM players p
+      LEFT JOIN offchain_scores s ON p.address = s.player_address
+      GROUP BY p.address
+      ORDER BY score DESC
+      LIMIT 100
+    `;
+    
+    const { results } = await c.env.DB.prepare(query).all();
+    
+    return c.json({
+      leaderboard: results
     });
-
-    const address = '0x16Bbc09bFCCaae7D4C2EcD79C5d72AeA886D2bd0' as const;
-    const abi = [
-      parseAbiItem('function submissionCount() view returns (uint256)'),
-      parseAbiItem('function submissions(uint256) view returns (address player, uint256 score, bytes32 sessionId, uint256 timestamp)')
-    ];
-
-    const count = await client.readContract({
-      address,
-      abi,
-      functionName: 'submissionCount'
-    }) as bigint;
-
-    const calls = [];
-    for (let i = 0n; i < count; i++) {
-      calls.push({ address, abi, functionName: 'submissions', args: [i] } as const);
-    }
-
-    const results = await client.multicall({ contracts: calls as any });
-    
-    // Group by player to get MAX score
-    const playerScores: Record<string, number> = {};
-    for (const r of results) {
-      if (r.status === 'success') {
-        const [player, score] = r.result as [string, bigint, string, bigint];
-        const playerLower = player.toLowerCase();
-        const scoreNum = Number(score);
-        if (!playerScores[playerLower] || scoreNum > playerScores[playerLower]) {
-          playerScores[playerLower] = scoreNum;
-        }
-      }
-    }
-
-    const playerAddresses = Object.keys(playerScores);
-    if (playerAddresses.length === 0) {
-      return c.json({ leaderboard: [] });
-    }
-
-    // Fetch usernames from DB
-    // Use chunks to prevent too many query parameters if many players
-    const placeholders = playerAddresses.map(() => '?').join(',');
-    const query = `SELECT address, username FROM players WHERE address IN (${placeholders})`;
-    
-    const { results: players } = await c.env.DB.prepare(query)
-      .bind(...playerAddresses)
-      .all();
-
-    const usernameMap = Object.fromEntries(players.map((p: any) => [p.address.toLowerCase(), p.username]));
-
-    const leaderboard = playerAddresses.map(addr => ({
-      address: addr,
-      username: usernameMap[addr] || `Player_${addr.slice(2, 8)}`,
-      score: playerScores[addr]
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 100);
-
-    return c.json({ leaderboard });
   } catch (error: any) {
     console.error(error);
     return c.json({ error: "Failed to fetch leaderboard" }, 500);

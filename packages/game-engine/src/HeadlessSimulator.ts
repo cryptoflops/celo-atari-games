@@ -5,69 +5,69 @@ import { Score, PowerUpType } from './Score';
 import { FrameInput } from './ReplayRecorder';
 
 export class HeadlessSimulator {
+  public static createInitialState(seed: number, levelIndex: number, currentScore: number) {
+    const maze = new Maze(seed + levelIndex * 1000);
+    const center = Math.floor(MAZE_COLS / 2);
+    const player = new Player(maze, center, center);
+    const ghosts = this.createGhosts(maze, levelIndex);
+    const scoreObj = new Score(maze);
+    scoreObj.current = currentScore;
+    
+    return {
+      maze,
+      player,
+      ghosts,
+      scoreObj,
+      invincibleFrames: 180,
+      powerupTimers: { freeze: 0, speed: 0 }
+    };
+  }
+
   public static simulate(seed: number, inputs: FrameInput[], maxFrames: number = 36000) {
     let currentFrame = 0;
     let inputIndex = 0;
-    
     let levelIndex = 1;
-    let currentScore = 0;
     
-    let maze = new Maze(seed + levelIndex * 1000);
-    const center = Math.floor(MAZE_COLS / 2);
-    let player = new Player(maze, center, center);
-    let ghosts = this.createGhosts(maze, levelIndex);
-    let scoreObj = new Score(maze);
-    scoreObj.current = currentScore;
-    
-    let invincibleFrames = 180;
-    let powerupTimers = { freeze: 0, speed: 0 };
+    let state = this.createInitialState(seed, levelIndex, 0);
     let isOver = false;
     let terminatedEarly = false;
     
-    const initLevel = (lvl: number, score: number) => {
-      levelIndex = lvl;
-      currentScore = score;
-      maze = new Maze(seed + levelIndex * 1000);
-      player = new Player(maze, center, center);
-      ghosts = this.createGhosts(maze, levelIndex);
-      scoreObj = new Score(maze);
-      scoreObj.current = currentScore;
-      invincibleFrames = 180;
-      powerupTimers = { freeze: 0, speed: 0 };
-    };
-
     while (!isOver && currentFrame < maxFrames) {
-      currentFrame++;
-      
+      // Apply inputs for the CURRENT frame BEFORE updating physics
       while (inputIndex < inputs.length && inputs[inputIndex].f === currentFrame) {
-        player.setDirection(inputs[inputIndex].d);
+        state.player.setDirection(inputs[inputIndex].d);
         inputIndex++;
       }
       
-      player.update();
-      ghosts.forEach(g => g.update(player));
+      state.player.update();
+      state.ghosts.forEach(g => g.update(state.player));
       
-      if (invincibleFrames > 0) invincibleFrames--;
-      if (powerupTimers.freeze > 0) {
-        powerupTimers.freeze--;
-        if (powerupTimers.freeze === 0) ghosts.forEach(g => { if (g.state === GhostState.FROZEN) g.state = GhostState.CHASE; });
+      // Timers
+      if (state.invincibleFrames > 0) state.invincibleFrames--;
+      if (state.powerupTimers.freeze > 0) {
+        state.powerupTimers.freeze--;
+        if (state.powerupTimers.freeze === 0) {
+          state.ghosts.forEach(g => { if (g.state === GhostState.FROZEN) g.state = GhostState.CHASE; });
+        }
       }
-      if (powerupTimers.speed > 0) {
-        powerupTimers.speed--;
-        if (powerupTimers.speed === 0) player.speedMultiplier = 1.0;
+      if (state.powerupTimers.speed > 0) {
+        state.powerupTimers.speed--;
+        if (state.powerupTimers.speed === 0) {
+          state.player.speedMultiplier = 1.0;
+        }
       }
-      
-      const collision = scoreObj.checkCollisions(player);
+
+      // Collisions
+      const collision = state.scoreObj.checkCollisions(state.player);
       if (collision !== PowerUpType.NONE) {
-        currentScore = scoreObj.current;
         if (collision === PowerUpType.GAS_SHIELD) {
-          ghosts.forEach(g => g.state = GhostState.FROZEN);
-          powerupTimers.freeze = 300;
+          state.ghosts.forEach(g => g.state = GhostState.FROZEN);
+          state.powerupTimers.freeze = 300;
         } else if (collision === PowerUpType.FLASH_LOAN) {
-          player.speedMultiplier = 1.5;
-          powerupTimers.speed = 300;
+          state.player.speedMultiplier = 1.5;
+          state.powerupTimers.speed = 300;
         } else if (collision === PowerUpType.RUG_PULL) {
-          ghosts.forEach((g, i) => {
+          state.ghosts.forEach((g, i) => {
             g.x = (1 + i) * TILE_SIZE + TILE_SIZE / 2;
             g.y = 1 * TILE_SIZE + TILE_SIZE / 2;
             g.gridX = 1 + i;
@@ -76,17 +76,20 @@ export class HeadlessSimulator {
         }
       }
       
-      if (invincibleFrames <= 0) {
-        for (const ghost of ghosts) {
-          const dist = Math.hypot(player.x - ghost.x, player.y - ghost.y);
-          if (dist < TILE_SIZE * 0.7 && !ghost.isEaten && ghost.state !== GhostState.FROZEN) {
+      // Check ghost collisions
+      if (state.invincibleFrames <= 0) {
+        const collisionThresholdSq = (TILE_SIZE * 0.7) ** 2;
+        for (const ghost of state.ghosts) {
+          const dx = state.player.x - ghost.x;
+          const dy = state.player.y - ghost.y;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < collisionThresholdSq && !ghost.isEaten && ghost.state !== GhostState.FROZEN) {
             if (ghost.state === GhostState.FRIGHTENED) {
               ghost.isEaten = true;
-              scoreObj.current += 200;
-              currentScore = scoreObj.current;
+              state.scoreObj.current += 200;
             } else {
               isOver = true;
-              break;
             }
           }
         }
@@ -94,11 +97,14 @@ export class HeadlessSimulator {
       
       if (isOver) break;
       
-      if (scoreObj.isLevelComplete()) {
-        scoreObj.current += 1000;
-        currentScore = scoreObj.current;
-        initLevel(levelIndex + 1, scoreObj.current);
+      // Level Complete
+      if (state.scoreObj.isLevelComplete()) {
+        state.scoreObj.current += 1000;
+        state = this.createInitialState(seed, levelIndex + 1, state.scoreObj.current);
+        levelIndex++;
       }
+
+      currentFrame++;
     }
     
     if (!isOver && currentFrame >= maxFrames) {
@@ -106,12 +112,12 @@ export class HeadlessSimulator {
     }
     
     return {
-      finalScore: currentScore,
+      finalScore: state.scoreObj.current,
       frameCount: currentFrame,
       terminated: terminatedEarly
     };
   }
-  
+
   private static createGhosts(maze: Maze, levelIndex: number): Ghost[] {
     const numGhosts = Math.min(4, Math.floor((levelIndex - 1) / 2) + 1);
     const speedMult = 1.0 + Math.floor(levelIndex / 2) * 0.25;

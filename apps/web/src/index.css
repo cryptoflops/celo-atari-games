@@ -1,23 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Celo Brand Palette ─────────────────────────── */
-  --color-primary: #FCFF52;       /* Prosperity Yellow */
-  --color-secondary: #111;        /* Dark text on yellow */
-  --color-accent: #7CC0FF;        /* Celo Blue accent */
-  --color-surface: #1a1024;       /* Deep purple-black surface */
-  --color-background: #120b1a;    /* Celo deep base (tinted #1E002B) */
-  --color-border: #2d2440;        /* Purple-tinted border */
+  /* ── Luminous Precision Palette ────────────────── */
+  --color-primary: #00f0ff;       /* Electric Cyan */
+  --color-on-primary: #00363a;
+  --color-secondary: #d1bcff;      /* Lavender */
+  --color-tertiary: #dbfcff;       /* Bright Cyan */
+  --color-surface: #10131a;        /* Obsidian */
+  --color-surface-bright: #363940;
+  --color-background: #0b0e14;     /* Deep base */
+  --color-border: #272a31;
   --color-danger: #F72585;
-  --color-success: #56DF7C;       /* Celo green accent */
-  --color-forest: #476520;        /* Celo Forest */
-  --color-cream: #FCF6F1;         /* Celo warm neutral */
-  --color-sand: #E7E3D4;          /* Celo muted neutral */
-  --color-celo-orange: #FF9A51;   /* Celo orange (accent only) */
+  --color-success: #00FFAB;        /* Emerald Success */
+  --color-warning: #FFB800;        /* Amber Warning */
+  
+  /* ── Celo Brand Colors (Accents) ──────────────── */
+  --color-celo-yellow: #FCFF52;    /* Prosperity Yellow */
+  --color-celo-forest: #476520;
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'Geist', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   --font-arcade: 'Press Start 2P', monospace;
+  --font-pixel: 'Silkscreen', monospace;
 }
 
 :root {
@@ -28,9 +32,10 @@
 
 body {
   background-color: var(--color-background);
-  color: var(--color-cream);
+  color: #e1e2eb;
   margin: 0;
   font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 #root {
@@ -342,10 +347,322 @@ body::after {
   color: #E7E3D4;
 }
 
-/* ── Touch targets ────────────────────────────────── */
+/* ── Touch targets & Interactive Safe Zones ────────── */
 
 button,
 [role="button"],
 a {
   touch-action: manipulation;
+  outline-color: var(--color-primary);
 }
+
+/* Focus styles for keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* ── Arcade Cabinet 3D System ─────────────────────── */
+
+.cabinet-container {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.cabinet {
+  position: relative;
+  background: linear-gradient(135deg, #2c1a4d 0%, #170e2b 100%); /* Premium dark purple gradient */
+  border-radius: 16px;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    -8px 0 0 #0d0617, /* Left side deep shadow */
+    8px 0 0 #4f3385,  /* Right side cyber highlight */
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 25px rgba(252, 255, 82, 0.04);
+  transform: rotateX(6deg);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* Interactive Cabinet Hover Effect */
+.cabinet-container:hover .cabinet {
+  transform: rotateX(2deg) rotateY(-1deg) translateY(-8px);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 
+    -10px 0 0 #0d0617,
+    10px 0 0 #4f3385,
+    0 30px 50px rgba(0, 240, 255, 0.15),
+    inset 0 0 25px rgba(0, 240, 255, 0.08);
+}
+
+.cabinet-marquee {
+  background: #090510;
+  padding: 10px;
+  border: 2px solid #4f3385;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.cabinet-marquee::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transform: translateX(-100%);
+  animation: sweep 4s infinite linear;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-100%); }
+  50%, 100% { transform: translateX(100%); }
+}
+
+.cabinet-screen-bezel {
+  background: #050308;
+  padding: 14px;
+  border-radius: 10px;
+  border: 4px solid #0d0617;
+  box-shadow: 
+    inset 0 0 25px rgba(0, 0, 0, 0.9),
+    0 0 15px rgba(0, 240, 255, 0.05);
+  position: relative;
+}
+
+.cabinet-screen {
+  aspect-ratio: 4/3;
+  background: #0d0e12;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glass Screen Reflection Overlay */
+.cabinet-screen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 50%);
+  transform: rotate(-15deg) translate(-30%, -30%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cabinet-controls {
+  margin-top: 18px;
+  background: #170e28;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 6px 0 #090510,
+    inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.joystick-base {
+  width: 36px;
+  height: 36px;
+  background: #090510;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.joystick {
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, #ff2e93, #b50050);
+  border-radius: 50%;
+  box-shadow: 
+    0 6px 0 #6e002e,
+    0 0 8px rgba(247, 37, 133, 0.4);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cabinet-container:hover .joystick {
+  transform: translate(2px, -2px);
+  animation: joystick-wiggle 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes joystick-wiggle {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(3px, -2px); }
+  50% { transform: translate(-2px, 3px); }
+  75% { transform: translate(1px, -3px); }
+  100% { transform: translate(-3px, 1px); }
+}
+
+.control-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.control-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 
+    0 3px 0 rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.cabinet-container:hover .control-btn {
+  animation: button-press 2s infinite alternate;
+}
+
+.cabinet-container:hover .control-btn:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.cabinet-container:hover .control-btn:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes button-press {
+  0%, 80% { transform: translateY(0); box-shadow: 0 3px 0 rgba(0,0,0,0.6); }
+  90%, 100% { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.6); }
+}
+
+.control-btn.yellow { background: radial-gradient(circle at 30% 30%, #fcff8c, #d5c800); }
+.control-btn.red { background: radial-gradient(circle at 30% 30%, #ff529f, #cf0056); }
+.control-btn.blue { background: radial-gradient(circle at 30% 30%, #5ceaff, #009cb8); }
+
+/* ── Glassmorphism ────────────────────────────────── */
+
+.glass-panel {
+  background: rgba(16, 19, 26, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-panel-interactive {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-panel-interactive:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: 
+    0 12px 30px rgba(0, 240, 255, 0.05),
+    inset 0 0 12px rgba(0, 240, 255, 0.03);
+}
+
+/* ── Typography Utilities & Neon Shadows ───────────── */
+
+.pixel-title {
+  font-family: var(--font-arcade);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-celo-yellow);
+  text-shadow: 
+    3px 3px 0 #120b1a,
+    0 0 12px rgba(252, 255, 82, 0.25);
+}
+
+.pixel-subtitle {
+  font-family: var(--font-pixel);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  text-shadow: 
+    2px 2px 0 #120b1a,
+    0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.text-glow-primary {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+.text-glow-success {
+  text-shadow: 0 0 8px rgba(0, 255, 171, 0.5);
+}
+
+.text-glow-danger {
+  text-shadow: 0 0 8px rgba(247, 37, 133, 0.5);
+}
+
+.tech-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-tertiary);
+}
+
+/* ── Status Lights ── */
+.status-light {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-light-live { 
+  color: var(--color-success); 
+  background: currentColor; 
+  box-shadow: 0 0 8px var(--color-success);
+}
+.status-light-beta { 
+  color: var(--color-primary); 
+  background: currentColor; 
+  box-shadow: 0 0 8px var(--color-primary);
+}
+.status-light-soon { 
+  color: #554a3a; 
+  background: currentColor; 
+  box-shadow: none;
+}
+
+/* ── Image Rendering Utilities ── */
+.image-pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.touch-none {
+  touch-action: none;
+}
+
+/* Safe area bottom padding for mobile browsers and MiniPay */
+.pb-safe {
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+
+/* Neon Focus Border for Input forms */
+.focus-neon:focus {
+  border-color: var(--color-primary);
+  box-shadow: 
+    0 0 0 2px rgba(0, 240, 255, 0.15),
+    0 0 10px rgba(0, 240, 255, 0.1);
+}
+

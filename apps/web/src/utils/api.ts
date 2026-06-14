@@ -1,4 +1,4 @@
-import type { FrameInput } from '@celo-arcade/game-engine';
+import type { FrameInput } from '@celo-atari-games/gas-gobbler-engine';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -18,12 +18,13 @@ export const api = {
     player: string,
     claimedScore: number,
     nonce: number,
-    replayInputs: FrameInput[]
-  ): Promise<{ signature: string; deadline: number }> {
+    replayInputs: FrameInput[],
+    gameId?: string
+  ): Promise<{ signature: string; deadline: number; registryAddress: string }> {
     const res = await fetch(`${API_URL}/api/scores/validate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, player, claimedScore, nonce, replayInputs })
+      body: JSON.stringify({ sessionId, player, claimedScore, nonce, replayInputs, gameId })
     });
     if (!res.ok) throw new Error(await res.text());
     return res.json();

@@ -116,7 +116,7 @@ export class Ghost {
         }
       } else if (this.type === GhostType.INKY || this.type === GhostType.CLYDE) {
         // Just scatter randomly if it's Inky or Clyde
-        const index = Math.abs(this.gridX * 31 + this.gridY * 17 + Math.floor(player.x)) % possibleDirs.length;
+        const index = Math.abs(this.gridX * 31 + this.gridY * 17 + player.gridX) % possibleDirs.length;
         this.currentDirection = possibleDirs[index];
         return;
       }
@@ -140,7 +140,7 @@ export class Ghost {
       }
       this.currentDirection = bestDir;
     } else {
-      const index = Math.abs(this.gridX * 31 + this.gridY * 17 + Math.floor(player.x)) % possibleDirs.length;
+      const index = Math.abs(this.gridX * 31 + this.gridY * 17 + player.gridX) % possibleDirs.length;
       this.currentDirection = possibleDirs[index];
     }
   }

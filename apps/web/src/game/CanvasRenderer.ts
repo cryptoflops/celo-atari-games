@@ -1,4 +1,4 @@
-import { Maze, TileType, TILE_SIZE, MAZE_COLS, MAZE_ROWS, Player, Ghost, GhostState } from '@celo-arcade/game-engine';
+import { Maze, TileType, TILE_SIZE, MAZE_COLS, MAZE_ROWS, Player, Ghost, GhostState } from '@celo-atari-games/gas-gobbler-engine';
 
 export class CanvasRenderer {
   private ctx: CanvasRenderingContext2D;

@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@celo-arcade/game-engine": "*",
+    "@celo-atari-games/gas-gobbler-engine": "*",
     "@tanstack/react-query": "^5.100.10",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
