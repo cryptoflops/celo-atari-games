@@ -13,7 +13,7 @@
     "@celo-atari-games/gas-gobbler-engine": "*",
     "@tanstack/react-query": "^5.100.10",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react-dom": "^19.2.7",
     "react-router-dom": "^7.15.0",
     "viem": "^2.48.11",
     "wagmi": "^3.6.14",
