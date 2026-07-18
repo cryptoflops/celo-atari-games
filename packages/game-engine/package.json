@@ -1,5 +1,5 @@
 {
-  "name": "@celo-atari-games/gas-gobbler-engine",
+  "name": "@cryptoflops/celo-atari-games",
   "version": "1.0.1",
   "description": "Shared game engine logic for Celo Atari Games MiniApp",
   "main": "dist/index.js",

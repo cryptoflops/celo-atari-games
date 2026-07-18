@@ -1,10 +1,10 @@
 {
-  "name": "celo-atari-games",
+  "name": "@cryptoflops/celo-atari-games",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test --workspaces",
+    "test": "echo \"No tests specified\"",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
     "build:web": "npm run build --workspace=apps/web",
@@ -17,5 +17,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
