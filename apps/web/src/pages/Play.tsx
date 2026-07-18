@@ -120,7 +120,7 @@ export const Play: React.FC = () => {
             {info.logo ? (
               <img src={info.logo} alt={info.name} className="max-w-[160px] object-contain drop-shadow-[0_0_25px_rgba(0,240,255,0.4)]" />
             ) : (
-              <div className="w-32 h-32 flex items-center justify-center text-6xl opacity-60 filter drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]">
+              <div className="w-32 h-32 flex items-center justify-center text-6xl opacity-60 filter drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]" aria-hidden="true">
                 {gameId === 'mento-invaders' ? '👾' : gameId === 'block-breaker' ? '🧱' : '🏃'}
               </div>
             )}
@@ -129,7 +129,7 @@ export const Play: React.FC = () => {
           {/* Instructions Box */}
           <div className="relative pt-4">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-background px-4 z-10">
-              <span className="font-arcade text-[7px] text-white/30 tracking-[0.3em]">HOW TO PLAY</span>
+              <span className="tech-label text-white/40 tracking-[0.3em] uppercase">HOW TO PLAY</span>
             </div>
             <div className="glass-panel p-5 pt-7 border-dashed border-2 border-white/10">
               <p className="tech-label text-white/95 leading-relaxed text-center mb-5 normal-case font-medium">

@@ -129,14 +129,14 @@ const CabinetCard: React.FC<{
 
 export const Home: React.FC = () => {
   return (
-    <div className="flex flex-col items-center py-12 px-4 max-w-5xl mx-auto w-full animate-in fade-in duration-700">
+    <div className="flex flex-col items-center py-12 px-4 max-w-5xl mx-auto w-full animate-in fade-in duration-500">
       
       {/* Hero Title */}
-      <div className="text-center mb-12">
-        <h1 className="pixel-title text-4xl sm:text-6xl mb-6 tracking-widest">
+      <div className="text-center mb-10 sm:mb-12">
+        <h1 className="pixel-title text-3xl sm:text-5xl mb-4 sm:mb-6 tracking-widest">
           CELO ATARI GAMES
         </h1>
-        <p className="text-white/70 font-mono text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+        <p className="text-white/85 font-mono text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
           4 retro mini-games for MiniPay.<br/>
           Play fast rounds, save scores on Celo, and secure your spot on the blockchain.
         </p>

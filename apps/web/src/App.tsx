@@ -13,9 +13,9 @@ import { TemporalBackground } from './components/TemporalBackground';
 const queryClient = new QueryClient();
 
 const NavIcon: React.FC<{ icon: string, label: string, to: string, active: boolean }> = ({ icon, label, to, active }) => (
-  <Link to={to} className={`flex flex-col items-center gap-1 flex-1 py-2.5 transition-all relative ${active ? 'text-primary scale-105' : 'text-white/40 hover:text-white/70'}`}>
+  <Link to={to} className={`flex flex-col items-center gap-1 flex-1 py-3 min-h-[52px] justify-center transition-all relative ${active ? 'text-primary scale-105' : 'text-white/40 hover:text-white/70'}`}>
     <span className="text-xl drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]">{icon}</span>
-    <span className="font-arcade text-[6px] tracking-tighter uppercase">{label}</span>
+    <span className="font-arcade text-[7px] tracking-tighter uppercase">{label}</span>
     {active && (
       <span className="absolute bottom-0.5 w-6 h-0.5 bg-primary rounded-full shadow-[0_0_6px_var(--color-primary)]" />
     )}
