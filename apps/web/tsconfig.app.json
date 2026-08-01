@@ -11,6 +11,12 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
+
+    /* Map the @celo-arcade/game-engine import to the local workspace package
+       source (mirrors the resolve.alias in vite.config.ts). */
+    "paths": {
+      "@celo-arcade/game-engine": ["../../packages/game-engine/src/index.ts"]
+    },
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
