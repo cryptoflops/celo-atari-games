@@ -2,15 +2,24 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
-import type { FC } from 'react';
+import { lazy, Suspense, type FC } from 'react';
 import { config } from './config/wagmi';
-import { Home } from './pages/Home';
-import { Play } from './pages/Play';
-import { Leaderboard } from './pages/Leaderboard';
-import { Profile } from './pages/Profile';
 import { WalletStatus } from './components/WalletStatus';
 import { TemporalBackground } from './components/TemporalBackground';
 import { Nav } from './components/Nav';
+
+// Route-level code-splitting: each page is its own chunk. The Play route
+// carries the game engine + canvas renderer, so it lands in a separate
+// chunk that the Home / Leaderboard / Profile routes never download.
+// The page files use named exports; lazilyN reshapes a named export into
+// the { default } shape React.lazy expects, so no page file changes.
+const lazilyN = <T,>(loader: () => Promise<T>, pick: (m: T) => FC) =>
+  lazy(() => loader().then(m => ({ default: pick(m) })));
+
+const Home = lazilyN(() => import('./pages/Home'), m => m.Home);
+const Play = lazilyN(() => import('./pages/Play'), m => m.Play);
+const Leaderboard = lazilyN(() => import('./pages/Leaderboard'), m => m.Leaderboard);
+const Profile = lazilyN(() => import('./pages/Profile'), m => m.Profile);
 
 const queryClient = new QueryClient();
 
@@ -76,12 +85,26 @@ function App() {
             </a>
 
             <main id="main" className="flex-1 w-full max-w-5xl mx-auto relative px-4">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/play" element={<Play />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/profile" element={<Profile />} />
-              </Routes>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-24">
+                    <span
+                      className="font-arcade text-secondary animate-pulse"
+                      style={{ fontSize: '21px', textShadow: '2px 2px 0 var(--color-ink)' }}
+                      aria-label="Loading"
+                    >
+                      INSERT&nbsp;COIN
+                    </span>
+                  </div>
+                }
+              >
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/play" element={<Play />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Routes>
+              </Suspense>
             </main>
 
             <Nav
