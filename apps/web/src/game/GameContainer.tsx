@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { GameLoop } from './GameLoop';
-import { Maze, TILE_SIZE, Player, Direction, Ghost, GhostState, Score, PowerUpType, ReplayRecorder, HeadlessSimulator } from '@celo-atari-games/gas-gobbler-engine';
+import { Maze, TILE_SIZE, MAZE_COLS, Player, Direction, Ghost, GhostState, GhostType, Score, PowerUpType, ReplayRecorder } from '@celo-atari-games/gas-gobbler-engine';
 import type { FrameInput } from '@celo-atari-games/gas-gobbler-engine';
 import { CanvasRenderer } from './CanvasRenderer';
 
@@ -34,12 +34,12 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
     recorder: null,
   });
 
-  const nextDirRef = useRef<Direction>(Direction.NONE);
-
   const handleInput = useCallback((dir: Direction) => {
     const player = gameRef.current?.player;
-    if (player && gameOverScore === null) {
-      nextDirRef.current = dir;
+    const recorder = gameState.current.recorder;
+    if (player && recorder && gameOverScore === null) {
+      player.setDirection(dir);
+      recorder.recordInput(dir);
     }
   }, [gameOverScore]);
 
@@ -65,11 +65,27 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
     let isOver = false;
 
     const initLevel = (levelIndex: number, currentScore: number = 0) => {
-      const state = HeadlessSimulator.createInitialState(seed, levelIndex, currentScore);
+      const maze = new Maze(seed + levelIndex * 1000);
+      const center = Math.floor(MAZE_COLS / 2);
+      const player = new Player(maze, center, center);
+      
+      const numGhosts = Math.min(4, Math.floor((levelIndex - 1) / 2) + 1);
+      const speedMult = 1.0 + Math.floor(levelIndex / 2) * 0.25;
+      
+      const ghosts: Ghost[] = [];
+      const types: GhostType[] = [GhostType.BLINKY, GhostType.PINKY, GhostType.INKY, GhostType.CLYDE];
+      for (let i = 0; i < numGhosts; i++) {
+        ghosts.push(new Ghost(maze, 1 + i, 1, types[i % 4], speedMult));
+      }
+      
+      const scoreObj = new Score(maze);
+      scoreObj.current = currentScore;
       
       gameRef.current = {
-        ...state,
+        maze, player, ghosts, scoreObj,
         level: levelIndex,
+        invincibleFrames: 180,
+        powerupTimers: { freeze: 0, speed: 0 }
       };
       
       setCurrentLevel(levelIndex);
@@ -79,18 +95,11 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
     // First time init
     initLevel(1, 0);
 
-    const update = () => {
+    const update = (_dt: number) => {
       if (isOver || !gameRef.current) return;
       const state = gameRef.current;
       
-      // Sync Input
-      const currentDir = nextDirRef.current;
-      if (currentDir !== Direction.NONE) {
-        state.player.setDirection(currentDir);
-        recorder.recordInput(currentDir);
-        nextDirRef.current = Direction.NONE; // Reset after recording
-      }
-
+      recorder.tick();
       state.player.update();
       state.ghosts.forEach(g => g.update(state.player));
 
@@ -132,13 +141,9 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
 
       // Check ghost collisions
       if (state.invincibleFrames <= 0) {
-        const collisionThresholdSq = (TILE_SIZE * 0.7) ** 2;
         for (const ghost of state.ghosts) {
-          const dx = state.player.x - ghost.x;
-          const dy = state.player.y - ghost.y;
-          const distSq = dx * dx + dy * dy;
-
-          if (distSq < collisionThresholdSq && !ghost.isEaten && ghost.state !== GhostState.FROZEN) {
+          const dist = Math.hypot(state.player.x - ghost.x, state.player.y - ghost.y);
+          if (dist < TILE_SIZE * 0.7 && !ghost.isEaten && ghost.state !== GhostState.FROZEN) {
             if (ghost.state === GhostState.FRIGHTENED) {
               ghost.isEaten = true;
               state.scoreObj.current += 200;
@@ -158,8 +163,6 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
         state.scoreObj.current += 1000;
         initLevel(state.level + 1, state.scoreObj.current);
       }
-
-      recorder.tick();
     };
 
     const draw = () => {
@@ -175,83 +178,59 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onGameOver, seed =
     return () => { loop.stop(); };
   }, [seed, onGameOver]);
 
-  const handleControlEvent = (dir: Direction) => (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    handleInput(dir);
-  };
+  const handleTouch = (dir: Direction) => () => handleInput(dir);
 
-  const dpadBtnClass = "glass-panel flex items-center justify-center aspect-square text-3xl transition-all active:scale-90 active:bg-primary/30 active:border-primary/50 text-white/90 select-none touch-none shadow-lg";
-  const dpadStyle = { backdropFilter: 'blur(12px)' };
+  // D-pad buttons — Sega arcade control look (hard offset press, active flips to primary).
+  const dpadBtnClass =
+    "arcade-btn arcade-btn-secondary p-0 rounded-none font-arcade text-xl flex items-center justify-center min-h-[60px] transition-all";
+  const dpadStyle = { boxShadow: '4px 4px 0 #2a2a16' };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto relative p-4 touch-none" ref={containerRef}>
+    <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto relative p-4" ref={containerRef}>
       {/* Score HUD */}
       <div className="flex justify-between w-full mb-3 px-1">
-        <div className="glass-panel px-3 py-1.5 flex items-center gap-2 text-[10px]">
-          <span className="tech-label opacity-40">SCORE</span>
-          <span className="text-primary font-bold">{currentScore}</span>
+        <div className="hw-chip flex items-center gap-2" style={{ fontSize: '13px' }}>
+          <span className="tech-label text-white/55">SCORE</span>
+          <span className="font-arcade text-secondary font-bold" style={{ fontSize: '15px' }}>{currentScore}</span>
         </div>
-        <div className="glass-panel px-3 py-1.5 flex items-center gap-2 text-[10px]">
-          <span className="tech-label opacity-40">LVL</span>
-          <span className="text-secondary font-bold">{currentLevel}</span>
+        <div className="hw-chip flex items-center gap-2" style={{ fontSize: '13px' }}>
+          <span className="tech-label text-white/55">LVL</span>
+          <span className="font-arcade text-primary font-bold" style={{ fontSize: '15px' }}>{currentLevel}</span>
         </div>
       </div>
-      
-      {/* Game canvas with arcade cabinet frame */}
-      <div className="relative overflow-hidden border border-white/10 rounded-xl glass-panel shadow-2xl">
-        <canvas 
+
+      {/* Game canvas — Sega cabinet screen frame */}
+      <div className="sega-screen" style={{ aspectRatio: '4 / 3', padding: 8 }}>
+        <canvas
           ref={canvasRef}
-          className="block w-full h-auto image-pixelated"
-          style={{ maxWidth: 'min(90vw, 400px)' }}
+          style={{ width: '100%', height: '100%', imageRendering: 'pixelated', display: 'block' }}
         />
-        
+
         {gameOverScore !== null && (
-          <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center animate-in fade-in duration-300">
-            <h2 className="pixel-title text-2xl text-cream mb-4">GAME OVER</h2>
-            <div className="font-arcade text-4xl text-primary mb-8">{gameOverScore}</div>
-            <p className="tech-label opacity-40 text-[9px] uppercase tracking-widest">Score secured on-chain</p>
+          <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center">
+            <h2 className="pixel-subtitle mb-3" style={{ fontSize: '27px', color: 'var(--color-cream)' }}>
+              GAME OVER
+            </h2>
+            <p
+              className="font-arcade text-secondary mb-6"
+              style={{ fontSize: '35px', textShadow: '3px 3px 0 var(--color-ink), 0 0 12px rgba(255,218,20,0.25)' }}
+            >
+              {gameOverScore.toLocaleString()}
+            </p>
+            <p className="tech-label text-white/55" style={{ fontSize: '13px' }}>Score saved. Press START to play again.</p>
           </div>
         )}
       </div>
 
-      {/* Mobile D-pad — ergonomic layout */}
-      <div className="grid grid-cols-3 gap-4 mt-10 w-full max-w-[280px] mx-auto pb-16 select-none">
+      {/* Mobile D-pad — arcade joystick */}
+      <div className="grid grid-cols-3 gap-3 mt-6 w-60 mx-auto md:hidden pb-8">
         <div />
-        <button 
-          className={dpadBtnClass} 
-          style={dpadStyle} 
-          onTouchStart={handleControlEvent(Direction.UP)}
-          onMouseDown={handleControlEvent(Direction.UP)}
-        >
-          ▲
-        </button>
+        <button className={dpadBtnClass} style={dpadStyle} onClick={handleTouch(Direction.UP)} aria-label="Move up">▲</button>
         <div />
-        <button 
-          className={dpadBtnClass} 
-          style={dpadStyle} 
-          onTouchStart={handleControlEvent(Direction.LEFT)}
-          onMouseDown={handleControlEvent(Direction.LEFT)}
-        >
-          ◀
-        </button>
-        <button 
-          className={dpadBtnClass} 
-          style={dpadStyle} 
-          onTouchStart={handleControlEvent(Direction.DOWN)}
-          onMouseDown={handleControlEvent(Direction.DOWN)}
-        >
-          ▼
-        </button>
-        <button 
-          className={dpadBtnClass} 
-          style={dpadStyle} 
-          onTouchStart={handleControlEvent(Direction.RIGHT)}
-          onMouseDown={handleControlEvent(Direction.RIGHT)}
-        >
-          ▶
-        </button>
+        <button className={dpadBtnClass} style={dpadStyle} onClick={handleTouch(Direction.LEFT)} aria-label="Move left">◀</button>
+        <button className={dpadBtnClass} style={dpadStyle} onClick={handleTouch(Direction.DOWN)} aria-label="Move down">▼</button>
+        <button className={dpadBtnClass} style={dpadStyle} onClick={handleTouch(Direction.RIGHT)} aria-label="Move right">▶</button>
       </div>
     </div>
-
   );
 };

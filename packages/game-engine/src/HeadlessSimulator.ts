@@ -2,7 +2,7 @@ import { Maze, TILE_SIZE, MAZE_COLS } from './Maze';
 import { Player } from './Player';
 import { Ghost, GhostState, GhostType } from './Ghost';
 import { Score, PowerUpType } from './Score';
-import { FrameInput } from './ReplayRecorder';
+import type { FrameInput } from './ReplayRecorder';
 
 export class HeadlessSimulator {
   public static createInitialState(seed: number, levelIndex: number, currentScore: number) {

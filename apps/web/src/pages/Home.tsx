@@ -1,252 +1,334 @@
-import React from 'react';
+import type { FC } from 'react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { Panel, FeaturedCard } from '../components/Card';
+import { Badge, type BadgeStatus } from '../components/Badge';
+import { buttonClass } from '../components/Button';
 
-/* ── Tiny CSS pixel-art previews ───────────────────── */
+/* ── Tiny CSS pixel-art previews (token-tinted) ────── */
 
-const GasGobblerPreview: React.FC = () => (
+const GasGobblerPreview: FC = () => (
   <div className="game-preview">
-    {/* Player */}
-    <div className="pixel" style={{ left: '44%', top: '46%', width: 14, height: 14, background: '#FCFF52', boxShadow: '14px 0 0 #FCFF52, 0 14px 0 #FCFF52' }} />
-    {/* Gas orbs */}
-    <div className="pixel" style={{ left: '18%', top: '28%', width: 10, height: 10, background: '#56DF7C' }} />
-    <div className="pixel" style={{ left: '72%', top: '58%', width: 10, height: 10, background: '#56DF7C' }} />
-    <div className="pixel" style={{ left: '55%', top: '18%', width: 10, height: 10, background: '#56DF7C' }} />
-    {/* Danger blocks */}
-    <div className="pixel bg-danger" style={{ left: '30%', top: '68%', width: 12, height: 12 }} />
-    <div className="pixel bg-danger" style={{ left: '80%', top: '30%', width: 12, height: 12 }} />
+    <div className="pixel" style={{ left: '44%', top: '46%', width: 14, height: 14, background: 'var(--color-celo-yellow)', boxShadow: '14px 0 0 var(--color-celo-yellow), 0 14px 0 var(--color-celo-yellow)' }} />
+    <div className="pixel" style={{ left: '18%', top: '28%', width: 10, height: 10, background: 'var(--color-success)' }} />
+    <div className="pixel" style={{ left: '72%', top: '58%', width: 10, height: 10, background: 'var(--color-success)' }} />
+    <div className="pixel" style={{ left: '55%', top: '18%', width: 10, height: 10, background: 'var(--color-success)' }} />
+    <div className="pixel" style={{ left: '30%', top: '68%', width: 12, height: 12, background: 'var(--color-danger)' }} />
+    <div className="pixel" style={{ left: '80%', top: '30%', width: 12, height: 12, background: 'var(--color-danger)' }} />
   </div>
 );
 
-const BlockBreakerPreview: React.FC = () => (
+const BlockBreakerPreview: FC = () => (
   <div className="game-preview">
-    {/* Brick row 1 */}
     {[10, 25, 40, 55, 70, 85].map((l, i) => (
-      <div key={`r1-${i}`} className="pixel" style={{ left: `${l}%`, top: '12%', width: 18, height: 8, background: i % 2 === 0 ? '#FCFF52' : '#7CC0FF', borderRadius: 1 }} />
+      <div key={`r1-${i}`} className="pixel" style={{ left: `${l}%`, top: '12%', width: 18, height: 8, background: i % 2 === 0 ? 'var(--color-celo-yellow)' : 'var(--color-acc-blue-soft)', borderRadius: 1 }} />
     ))}
-    {/* Brick row 2 */}
     {[15, 30, 45, 60, 75].map((l, i) => (
-      <div key={`r2-${i}`} className="pixel" style={{ left: `${l}%`, top: '26%', width: 18, height: 8, background: i % 2 === 0 ? '#56DF7C' : '#FCFF52', borderRadius: 1 }} />
+      <div key={`r2-${i}`} className="pixel" style={{ left: `${l}%`, top: '26%', width: 18, height: 8, background: i % 2 === 0 ? 'var(--color-acc-green-soft)' : 'var(--color-celo-yellow)', borderRadius: 1 }} />
     ))}
-    {/* Ball */}
-    <div className="pixel" style={{ left: '48%', top: '58%', width: 8, height: 8, background: '#FCF6F1', borderRadius: '50%' }} />
-    {/* Paddle */}
-    <div className="pixel" style={{ left: '36%', top: '82%', width: 40, height: 8, background: '#FCFF52', borderRadius: 2 }} />
+    <div className="pixel" style={{ left: '48%', top: '58%', width: 8, height: 8, background: 'var(--color-acc-paper-soft)', borderRadius: '50%' }} />
+    <div className="pixel" style={{ left: '36%', top: '82%', width: 40, height: 8, background: 'var(--color-celo-yellow)', borderRadius: 2 }} />
   </div>
 );
 
-const StableSprintPreview: React.FC = () => (
+const StableSprintPreview: FC = () => (
   <div className="game-preview">
-    {/* Lanes */}
     <div className="absolute inset-x-0 top-[33%] h-px bg-white/10" />
     <div className="absolute inset-x-0 top-[66%] h-px bg-white/10" />
-    {/* Runner */}
-    <div className="pixel" style={{ left: '20%', top: '44%', width: 12, height: 16, background: '#FCFF52' }} />
-    {/* Coins (cUSD) */}
-    <div className="pixel" style={{ left: '50%', top: '20%', width: 10, height: 10, background: '#56DF7C', borderRadius: '50%' }} />
-    <div className="pixel" style={{ left: '70%', top: '50%', width: 10, height: 10, background: '#56DF7C', borderRadius: '50%' }} />
-    {/* Traps */}
-    <div className="pixel bg-danger" style={{ left: '60%', top: '70%', width: 14, height: 14 }} />
+    <div className="pixel" style={{ left: '20%', top: '44%', width: 12, height: 16, background: 'var(--color-celo-yellow)' }} />
+    <div className="pixel" style={{ left: '50%', top: '20%', width: 10, height: 10, background: 'var(--color-success)', borderRadius: '50%' }} />
+    <div className="pixel" style={{ left: '70%', top: '50%', width: 10, height: 10, background: 'var(--color-success)', borderRadius: '50%' }} />
+    <div className="pixel" style={{ left: '60%', top: '70%', width: 14, height: 14, background: 'var(--color-danger)' }} />
   </div>
 );
 
-const MentoInvadersPreview: React.FC = () => (
+const MentoInvadersPreview: FC = () => (
   <div className="game-preview">
-    {/* Invader row */}
     {[20, 35, 50, 65, 80].map((l, i) => (
       <div key={`inv-${i}`} className="pixel" style={{
         left: `${l}%`, top: '18%', width: 12, height: 10,
-        background: i % 2 === 0 ? '#7CC0FF' : '#B490FF',
+        background: i % 2 === 0 ? 'var(--color-acc-blue-soft)' : 'var(--color-secondary)',
       }} />
     ))}
-    {/* Player */}
-    <div className="pixel" style={{ left: '44%', top: '78%', width: 18, height: 12, background: '#FCFF52' }} />
+    <div className="pixel" style={{ left: '44%', top: '78%', width: 18, height: 12, background: 'var(--color-celo-yellow)' }} />
   </div>
 );
 
-const CabinetCard: React.FC<{ 
-  id: string, 
-  title: string, 
-  status: 'LIVE' | 'BETA' | 'SOON', 
-  color: string, 
-  preview?: React.ReactNode,
-  logoUrl?: string
-}> = ({ id, title, status, color, preview, logoUrl }) => (
+/* ── Unified game card ─────────────────────────────── */
 
-  <div className="cabinet-container group">
-    <div className="cabinet" style={{ borderColor: color }}>
-      {/* Marquee */}
-      <div className="cabinet-marquee flex justify-between items-center px-4">
-        <span className="font-arcade text-[8px] text-white/50">{id}</span>
-        <div className="flex items-center gap-2">
-          <span className={`status-light ${
-            status === 'LIVE' ? 'status-light-live' : status === 'BETA' ? 'status-light-beta' : 'status-light-soon'
-          } ${status !== 'SOON' ? 'animate-pulse' : ''}`} />
-          <span className="tech-label">{status}</span>
-        </div>
-      </div>
+interface GameCardDatum {
+  id: string;
+  title: string;
+  subline: string;
+  desc: string;
+  status: BadgeStatus;
+  featured?: boolean;
+  playable: boolean;
+  preview: ReactNode;
+}
 
-      {/* Screen Area */}
-      <div className="cabinet-screen-bezel">
-        <div className="cabinet-screen bg-black flex items-center justify-center p-4">
-          {logoUrl ? (
-            <img src={logoUrl} alt={title} className="max-w-full max-h-full object-contain" />
-          ) : (
-            <div className="text-white/20 font-arcade text-[10px] text-center">
-              {preview || title.toUpperCase()}
-            </div>
-          )}
-          {/* Scanline effect */}
-          <div className="absolute inset-0 pointer-events-none opacity-20 bg-[repeating-linear-gradient(0deg,transparent_0px,rgba(0,0,0,0.5)_2px,transparent_4px)]" />
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div className="cabinet-controls">
-        <div className="joystick-base">
-          <div className="joystick" />
-        </div>
-        <div className="control-btn-group">
-          <div className="control-btn yellow" />
-          <div className="control-btn red" />
-          <div className="control-btn blue" />
-        </div>
-      </div>
-
-      {/* Action Button */}
-      <div className="mt-6 px-2 pb-2">
-        <Link 
-          to={`/play/${id.toLowerCase().replace(' ', '-')}`}
-          className={`arcade-btn w-full text-[10px] py-4 transform transition-all ${
-            status === 'SOON' ? 'arcade-btn-locked opacity-50 pointer-events-none' : 'group-hover:-translate-y-1'
-          }`}
-        >
-          {status === 'SOON' ? 'COMING SOON' : `PLAY ${title.toUpperCase()}`}
-        </Link>
-      </div>
-    </div>
-  </div>
-);
-
-export const Home: React.FC = () => {
-  return (
-    <div className="flex flex-col items-center py-12 px-4 max-w-5xl mx-auto w-full animate-in fade-in duration-500">
-      
-      {/* Hero Title */}
-      <div className="text-center mb-10 sm:mb-12">
-        <h1 className="pixel-title text-3xl sm:text-5xl mb-4 sm:mb-6 tracking-widest">
-          CELO ATARI GAMES
-        </h1>
-        <p className="text-white/85 font-mono text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
-          4 retro mini-games for MiniPay.<br/>
-          Play fast rounds, save scores on Celo, and secure your spot on the blockchain.
-        </p>
-      </div>
-
-      {/* Primary Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-20 w-full max-w-md">
-        <Link to="/play/gas-gobbler" className="arcade-btn flex-1 text-center py-4">
-          PLAY NOW
-        </Link>
-        <Link to="/leaderboard" className="arcade-btn-secondary flex-1 text-center py-4">
-          LEADERBOARD
-        </Link>
-      </div>
-
-      {/* Games Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mb-24">
-        <CabinetCard 
-          id="GAS GOBBLER" 
-          title="Gas Gobbler" 
-          status="LIVE" 
-          color="#FCFF52"
-          logoUrl="/gas_gobbler_logo.png"
-          preview={<GasGobblerPreview />}
-        />
-        <CabinetCard 
-          id="MENTO INVADERS" 
-          title="Mento Invaders" 
-          status="BETA" 
-          color="#00f0ff"
-          preview={<MentoInvadersPreview />}
-        />
-        <CabinetCard 
-          id="BLOCK BREAKER" 
-          title="Block Breaker" 
-          status="SOON" 
-          color="#F72585"
-          preview={<BlockBreakerPreview />}
-        />
-        <CabinetCard 
-          id="STABLE SPRINT" 
-          title="Stable Sprint" 
-          status="SOON" 
-          color="#56DF7C"
-          preview={<StableSprintPreview />}
-        />
-      </div>
-
-      {/* Proof of Ship / Infrastructure Section */}
-      <div className="w-full">
-        <div className="inline-block glass-panel px-4 py-1.5 mb-4 shadow-[0_0_12px_rgba(0,240,255,0.1)]">
-          <span className="font-arcade text-[8px] text-primary tracking-widest text-glow-primary">PROOF OF SHIP</span>
-        </div>
-        
-        <div className="glass-panel p-8 border border-white/10 shadow-lg relative overflow-hidden">
-          {/* Subtle light pulse effect */}
-          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            
-            {/* Infrastructure */}
-            <div>
-              <h3 className="tech-label mb-6 text-white/40 border-b border-white/5 pb-2">Infrastructure</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <span className="tech-label text-white/60">Frontend</span>
-                  <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="tech-label font-bold text-white/90 underline hover:text-primary transition-colors">GitHub</a>
-                </div>
-                <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <span className="tech-label text-white/60">Contracts</span>
-                  <a href="https://talent.app/" target="_blank" rel="noopener noreferrer" className="tech-label font-bold text-white/90 underline hover:text-primary transition-colors">Talent App</a>
-                </div>
-                <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <span className="tech-label text-white/60">Network</span>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shadow-[0_0_6px_var(--color-success)]" />
-                    <span className="tech-label font-bold text-success text-glow-success">Celo Mainnet</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* MiniPay */}
-            <div>
-              <h3 className="tech-label mb-6 text-white/40 border-b border-white/5 pb-2">MiniPay Features</h3>
-              <div className="space-y-3">
-                {[
-                  'Automatic Wallet Connection',
-                  'Mobile Safe-Area Rendering',
-                  'Optimized Touch Controls',
-                  'Stablecoin Ready'
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <span className="text-success text-xs font-bold">✓</span>
-                    <span className="tech-label text-white/80">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
+const GameCard: FC<{ data: GameCardDatum }> = ({ data }) => (
+  data.featured ? (
+    <FeaturedCard interactive>
+      <article className="flex flex-col gap-4">
+        <header className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <div className="machine-label machine-label--yellow mb-3">FLAGSHIP</div>
+            <h3 className="font-arcade text-cream" style={{ fontSize: '27px', lineHeight: 1.1, textShadow: '3px 3px 0 var(--color-ink)' }}>
+              {data.title}
+            </h3>
+            <p className="tech-label text-white/65 mt-2" style={{ fontSize: '13px' }}>{data.subline}</p>
           </div>
+          <Badge status={data.status} />
+        </header>
+
+        <div className="sega-screen">
+          {data.preview}
         </div>
+
+        <p className="text-white/80" style={{ fontSize: '17px', lineHeight: 1.35, maxWidth: '52ch' }}>
+          {data.desc}
+        </p>
+
+        {data.playable ? (
+          <Link
+            to="/play"
+            className={buttonClass('primary', 'px-6 self-center mt-1')}
+          >
+            ▶ Play {data.title}
+          </Link>
+        ) : (
+          <span className="arcade-btn arcade-btn-locked px-6 self-center mt-1" aria-disabled="true">
+            Coming soon
+          </span>
+        )}
+      </article>
+    </FeaturedCard>
+  ) : (
+    <Panel interactive={data.playable} variant={data.playable ? 'default' : 'locked'} className="h-full">
+      <article className="flex flex-col gap-3 h-full">
+        <header className="flex items-center justify-between gap-2">
+          <h3 className="font-arcade text-cream" style={{ fontSize: '21px', lineHeight: 1.1, textShadow: '2px 2px 0 var(--color-ink)' }}>
+            {data.title}
+          </h3>
+          <Badge status={data.status} />
+        </header>
+
+        <p className="tech-label text-white/65" style={{ fontSize: '13px' }}>{data.subline}</p>
+
+        <div className="sega-screen" style={{ aspectRatio: '4 / 3' }}>
+          {data.preview}
+        </div>
+
+        <p className="text-white/75" style={{ fontSize: '15px', lineHeight: 1.35 }}>
+          {data.desc}
+        </p>
+
+        <div className="mt-auto pt-2">
+          {data.playable ? (
+            <Link to="/play" className={buttonClass('secondary', 'w-full')}>
+              Play {data.title}
+            </Link>
+          ) : (
+            <span className="arcade-btn arcade-btn-locked w-full" aria-disabled="true">
+              Coming soon
+            </span>
+          )}
+        </div>
+      </article>
+    </Panel>
+  )
+);
+
+/* ── MiniPay capability cards ──────────────────────── */
+
+const MinipayCard: FC<{ icon: string; title: string; body: string }> = ({ icon, title, body }) => (
+  <Panel className="h-full">
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2">
+        <span aria-hidden="true" style={{ fontSize: '17px' }}>{icon}</span>
+        <span className="font-arcade text-cream" style={{ fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          {title}
+        </span>
+      </div>
+      <p className="text-white/70" style={{ fontSize: '15px', lineHeight: 1.3 }}>{body}</p>
+    </div>
+  </Panel>
+);
+
+const GAMES: GameCardDatum[] = [
+  {
+    id: 'gas-gobbler',
+    title: 'Gas Gobbler',
+    subline: 'Dodge-and-collect · on-chain scores',
+    desc: 'Dodge barriers and gobble gas orbs to advance. Survive the mempool and save your run directly to the Celo blockchain.',
+    status: 'live',
+    featured: true,
+    playable: true,
+    preview: <GasGobblerPreview />,
+  },
+  {
+    id: 'block-breaker',
+    title: 'Block Breaker',
+    subline: 'Multi-level · on-chain scores',
+    desc: 'Break Celo blocks before time runs out. A multi-level arcade challenge.',
+    status: 'soon',
+    featured: false,
+    playable: false,
+    preview: <BlockBreakerPreview />,
+  },
+  {
+    id: 'stable-sprint',
+    title: 'Stable Sprint',
+    subline: 'Endless runner · on-chain scores',
+    desc: 'Collect cUSD coins while dodging volatility traps. An endless runner speed test.',
+    status: 'soon',
+    featured: false,
+    playable: false,
+    preview: <StableSprintPreview />,
+  },
+  {
+    id: 'mento-invaders',
+    title: 'Mento Invaders',
+    subline: 'Stable-shooter · on-chain scores',
+    desc: 'Defend the stablecoin pool from incoming anomalies. Survive waves; save your score to the Celo registry.',
+    status: 'beta',
+    featured: false,
+    playable: false,
+    preview: <MentoInvadersPreview />,
+  },
+];
+
+export const Home: FC = () => {
+  const flagship = GAMES.find((g) => g.featured) ?? GAMES[0];
+  const lineup = GAMES.filter((g) => !g.featured);
+  const hasLocked = lineup.some((g) => !g.playable);
+
+  return (
+    <div className="flex flex-col items-center py-10 sm:py-14 px-4 max-w-5xl mx-auto w-full">
+      {/* ── Title screen hero ── */}
+      <header className="text-center mb-12 w-full">
+        <h1 className="pixel-title mb-5">
+          CELO&nbsp;ATARI
+        </h1>
+        <p className="text-cream/85 mx-auto" style={{ fontSize: '17px', lineHeight: 1.35, maxWidth: '52ch' }}>
+          Four retro mini-games for MiniPay. Play fast rounds, save scores on Celo, and climb the leaderboard.
+        </p>
+      </header>
+
+      {/* ── Primary action cluster ── */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-14 w-full max-w-md">
+        <Link to="/play" className={buttonClass('primary', 'flex-1 justify-center py-4')}>
+          ▶ Play now
+        </Link>
+        <Link to="/leaderboard" className={buttonClass('secondary', 'flex-1 justify-center py-4')}>
+          Leaderboard
+        </Link>
       </div>
 
-      {/* Footer Links */}
-      <div className="flex flex-wrap gap-6 justify-center mt-16 pb-12">
-        <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[GitHub]</a>
-        <a href="https://minipay.celo.org/" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[MiniPay Docs]</a>
-        <a href="https://celo.org/proof-of-ship" target="_blank" rel="noopener noreferrer" className="tech-label text-white/40 hover:text-primary transition-all">[Celo Proof of Ship]</a>
-      </div>
+      {/* ── Featured flagship arcade card ── */}
+      <section className="w-full mb-16" aria-label="Flagship game">
+        <h2 className="tech-label text-white/45 mb-4" style={{ fontSize: '13px' }}>
+          Featured
+        </h2>
+        <GameCard data={flagship} />
+      </section>
 
+      {/* ── Unified game lineup ── */}
+      <section className="w-full mb-16" aria-label="Game lineup">
+        <h2 className="tech-label text-white/45 mb-4" style={{ fontSize: '13px' }}>
+          Game lineup
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+          {lineup.map((g) => (
+            <GameCard key={g.id} data={g} />
+          ))}
+        </div>
+        {hasLocked && (
+          <p className="tech-label text-white/45 mt-5" style={{ fontSize: '13px' }}>
+            Locked titles are queued — they land in a future season.
+          </p>
+        )}
+      </section>
+
+      {/* ── Proof / system panel ── */}
+      <section className="w-full mb-16" aria-label="Proof of ship">
+        <Panel>
+          <h2 className="machine-label machine-label--yellow mb-5">System&nbsp;/&nbsp;Proof</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="tech-label text-white/45 mb-3" style={{ fontSize: '13px' }}>Infrastructure</h3>
+              <dl className="flex flex-col gap-2">
+                <div className="flex justify-between items-center border-b border-border pb-2 pt-1">
+                  <dt className="tech-label text-white/55" style={{ fontSize: '13px' }}>Frontend repo</dt>
+                  <dd>
+                    <a
+                      href="https://github.com/cryptoflops/celo-atari-games"
+                      target="_blank" rel="noopener noreferrer"
+                      className="tech-value text-cream hover:text-secondary underline"
+                    >
+                      GitHub
+                    </a>
+                  </dd>
+                </div>
+                <div className="flex justify-between items-center border-b border-border pb-2 pt-1">
+                  <dt className="tech-label text-white/55" style={{ fontSize: '13px' }}>Score contract</dt>
+                  <dd>
+                    <a
+                      href="https://celoscan.io/address/0x16Bbc09bFCCaae7D4C2EcD79C5d72AeA886D2bd0"
+                      target="_blank" rel="noopener noreferrer"
+                      className="tech-value text-cream hover:text-secondary underline"
+                    >
+                      celoscan ↗
+                    </a>
+                  </dd>
+                </div>
+                <div className="flex justify-between items-center border-b border-border pb-2 pt-1">
+                  <dt className="tech-label text-white/55" style={{ fontSize: '13px' }}>Network</dt>
+                  <dd className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="status-light status-light-live" />
+                    <span className="tech-value text-success" style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                      Celo Mainnet
+                    </span>
+                  </dd>
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <dt className="tech-label text-white/55" style={{ fontSize: '13px' }}>Verification</dt>
+                  <dd>
+                    <Badge status="verified" label="On-chain" />
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h3 className="tech-label text-white/45 mb-3" style={{ fontSize: '13px' }}>MiniPay features</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <MinipayCard icon="●" title="Auto-connect" body="Wallet attaches without prompts when opened inside MiniPay." />
+                <MinipayCard icon="▣" title="Safe-area" body="Renders inside the MiniPay frame so controls never tuck under OS chrome." />
+                <MinipayCard icon="▶" title="Touch controls" body="D-pad sized for thumb-only play." />
+                <MinipayCard icon="◆" title="Stablecoin-ready" body="Score submissions cost fractions of a cent — paid in cUSD." />
+              </div>
+            </div>
+          </div>
+        </Panel>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="w-full flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pb-10 pt-4 text-center">
+        <a href="https://github.com/cryptoflops/celo-atari-games" target="_blank" rel="noopener noreferrer" className="tech-label text-white/55 hover:text-secondary" style={{ fontSize: '13px' }}>
+          GitHub
+        </a>
+        <a href="https://docs.minipay.xyz" target="_blank" rel="noopener noreferrer" className="tech-label text-white/55 hover:text-secondary" style={{ fontSize: '13px' }}>
+          MiniPay docs
+        </a>
+        <a href="https://talent.app/~/earn/celo-proof-of-ship" target="_blank" rel="noopener noreferrer" className="tech-label text-white/55 hover:text-secondary" style={{ fontSize: '13px' }}>
+          Celo Proof of Ship
+        </a>
+        <span className="tech-label text-white/35" style={{ fontSize: '13px' }}>
+          © {new Date().getFullYear()} Celo Atari
+        </span>
+      </footer>
     </div>
   );
 };

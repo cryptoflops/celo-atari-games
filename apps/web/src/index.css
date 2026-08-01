@@ -1,52 +1,97 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Luminous Precision Palette ────────────────── */
-  --color-primary: #00f0ff;       /* Electric Cyan */
-  --color-on-primary: #00363a;
-  --color-secondary: #d1bcff;      /* Lavender */
-  --color-tertiary: #dbfcff;       /* Bright Cyan */
-  --color-surface: #10131a;        /* Obsidian */
-  --color-surface-bright: #363940;
-  --color-background: #0b0e14;     /* Deep base */
-  --color-border: #272a31;
-  --color-danger: #F72585;
-  --color-success: #00FFAB;        /* Emerald Success */
-  --color-warning: #FFB800;        /* Amber Warning */
-  
-  /* ── Celo Brand Colors (Accents) ──────────────── */
-  --color-celo-yellow: #FCFF52;    /* Prosperity Yellow */
-  --color-celo-forest: #476520;
-  --color-cream: #E7E3D4;          /* Warm cream for retro text */
+  /* ── Sega / Celo-hybrid palette ─────────────────────
+   * Primary action color = Sega electric blue. Celo Prosperity
+   * Yellow stays as a brand accent (kept identity). Surfaces are a
+   * Sega-tinted cool dark navy — never glass.
+   */
+  --color-primary:        #4502FF;  /* arcade-blue — primary actions, selected */
+  --color-on-primary:     #ffffff;
+  --color-secondary:      #FFDA14;  /* arcade-yellow — highlights, rewards */
+  --color-tertiary:       #dbfcff;  /* bright cyan — subtle accent text */
 
-  /* ── Shadow Tokens ────────────────────────────── */
-  --shadow-neon-primary: 0 0 8px rgba(0, 240, 255, 0.5);
-  --shadow-neon-success: 0 0 8px rgba(0, 255, 171, 0.5);
-  --shadow-neon-danger: 0 0 8px rgba(247, 37, 133, 0.5);
-  --shadow-arcade-btn: 0 6px 0 #8a8c1a;
-  --shadow-cabinet: -8px 0 0 #0d0617, 8px 0 0 #4f3385, 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(252, 255, 82, 0.04);
+  --color-surface:        #0a0a12;  /* Sega-tinted cool dark navy */
+  --color-surface-bright: #14141f;  /* raised surface */
+  --color-background:     #060610;  /* deep base */
+  --color-border:         #2a2a3a;
+  --color-border-strong:  #111827;  /* arcade-ink for hard panels */
 
-  /* ── Font Families ────────────────────────────── */
-  --font-sans: 'Geist', 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-arcade: 'Press Start 2P', monospace;
-  --font-pixel: 'Silkscreen', monospace;
+  --color-danger:         #DC2626;
+  --color-success:        #16A34A;
+  --color-warning:        #D97706;
 
-  /* ── Spacing Scale (8pt system) ───────────────── */
-  --space-unit: 4px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-  --space-3xl: 64px;
+  /* ── Celo brand accents (identity retained) ──────── */
+  --color-celo-yellow:    #FCFF52;  /* Prosperity Yellow — yellow accent */
+  --color-celo-forest:    #476520;  /* drop-shadow ink for pixel titles */
+  --color-cream:          #E7E3D4;  /* warm neutral text */
+  --color-sand:           #E7E3D4;  /* alias — keeps old call-sites working */
+  --color-ink:            #111827;  /* arcade-ink — text + outlines */
+  --color-paper:          #ffffff;  /* arcade-paper — featured panel surface */
 
-  /* ── Animation Tokens ─────────────────────────── */
+  /* ── Rank medals ── */
+  --color-rank-1:         #FFD700;  /* gold */
+  --color-rank-2:         #C0C0C0;  /* silver */
+  --color-rank-3:         #CD7F32;  /* bronze */
+
+  /* ── Off-system accent tokens (centralized) ──────── */
+  --color-acc-blue-soft:  #7CC0FF;
+  --color-acc-green-soft: #56DF7C;
+  --color-acc-paper-soft: #FCF6F1;
+
+  /* ── Cabinet rainbow trim ── */
+  --color-cabinet-trim-1: #4502FF;  /* blue */
+  --color-cabinet-trim-2: #FFDA14;  /* yellow */
+  --color-cabinet-trim-3: #16A34A;  /* green */
+  --color-cabinet-trim-4: #DC2626;  /* red */
+
+  /* ── Press / cabinet shadows (hard offset blocks, no blur) ── */
+  --color-arcade-shadow:  #060610;
+  --press-shadow-sm:      3px 3px 0 var(--color-arcade-shadow);
+  --press-shadow-md:      6px 6px 0 var(--color-arcade-shadow);
+  --press-shadow-lg:      8px 8px 0 var(--color-arcade-shadow);
+  --shadow-arcade-btn:    var(--press-shadow-md);
+
+  /* Legacy glow tokens (still referenced by a few call-sites). */
+  --shadow-neon-primary:  0 0 8px rgba(69, 2, 255, 0.45);
+  --shadow-neon-success:  0 0 8px rgba(22, 163, 74, 0.5);
+  --shadow-neon-danger:   0 0 8px rgba(220, 38, 38, 0.5);
+
+  /* ── Radii ── */
+  --radius-panel:  0px;
+  --radius-button: 999px;
+  --radius-chip:   2px;
+
+  /* ── Spacing (4px base) ── */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+
+  /* ── Type scale (Sega 13/15/17/21/27/35px) ── */
+  --text-xs:  13px;
+  --text-sm:  15px;
+  --text-md:  17px;
+  --text-lg:  21px;
+  --text-xl:  27px;
+  --text-2xl: 35px;
+
+  /* ── Animation tokens ── */
   --anim-fast: 120ms;
   --anim-base: 200ms;
   --anim-slow: 400ms;
   --anim-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* ── Fonts ── */
+  --font-sans:   'VT323', 'Inter', 'Space Mono', monospace;
+  --font-mono:   'JetBrains Mono', 'Space Mono', monospace;
+  --font-arcade: 'VT323', 'Press Start 2P', monospace;  /* system voice = VT323 */
+  --font-pixel:  'VT323', 'Silkscreen', monospace;
+  --font-vt323:  'VT323', monospace;
 }
 
 :root {
@@ -60,7 +105,13 @@ body {
   color: #e1e2eb;
   margin: 0;
   font-family: var(--font-sans);
+  /* VT323 renders ~1.5x larger than typical UI sans at the same px size.
+     Hold body copy to a readable target via the 13/15/17/21/27/35 scale. */
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
   overflow-x: hidden;
+  font-variant-numeric: tabular-nums;
 }
 
 #root {
@@ -74,8 +125,8 @@ body {
   flex-direction: column;
 }
 
-/* ── CRT Scanline Overlay ─────────────────────────── */
-/* Opt out on low-power devices to reduce repaint cost */
+/* ── CRT overlay (ambient, gated on motion preference) ── */
+
 @media (prefers-reduced-motion: no-preference) {
   body::before {
     content: "";
@@ -94,11 +145,6 @@ body {
     opacity: 0.12;
     z-index: 9998;
   }
-}
-
-/* ── CRT Vignette Overlay ─────────────────────────── */
-/* Respect reduced-motion: skip vignette on low-power */
-@media (prefers-reduced-motion: no-preference) {
   body::after {
     content: "";
     position: fixed;
@@ -107,620 +153,589 @@ body {
     background: radial-gradient(
       circle at center,
       transparent 0%,
-      rgba(30, 0, 43, 0.15) 55%,
-      rgba(18, 11, 26, 0.6) 100%
+      rgba(10, 10, 18, 0.25) 55%,
+      rgba(6, 6, 16, 0.6) 100%
     );
     z-index: 9999;
   }
 }
 
-/* ── Arcade Buttons ───────────────────────────────── */
+/* ── Sega buttons (chunky pill + hard offset press) ── */
 
 .arcade-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  border: 2px solid #2a2100;
-  background: var(--color-celo-yellow);
-  color: #111;
+  gap: 8px;
+  border-radius: var(--radius-button);
+  border: 2px solid var(--color-ink);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   box-shadow: var(--shadow-arcade-btn);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 900;
-  font-family: var(--font-mono);
-  padding: 14px 28px;
+  letter-spacing: 0.06em;
+  font-family: var(--font-arcade);
+  font-size: 17px;
+  line-height: 1;
+  padding: 12px 22px;
   cursor: pointer;
-  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+  transition:
+    transform var(--anim-fast) ease,
+    box-shadow var(--anim-fast) ease,
+    background var(--anim-fast) ease,
+    color var(--anim-fast) ease;
   touch-action: manipulation;
   min-height: 44px;
   text-decoration: none;
+  position: relative;
+  isolation: isolate;
 }
 
 .arcade-btn:hover {
-  transform: translateY(2px);
-  box-shadow: 0 4px 0 #8a8c1a;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--press-shadow-lg);
 }
 
 .arcade-btn:active {
-  transform: translateY(6px);
-  box-shadow: 0 0 0 #8a8c1a;
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 var(--color-arcade-shadow);
 }
 
-.arcade-btn-secondary {
-  background: #1a1024;
+.arcade-btn:disabled,
+.arcade-btn.is-disabled {
+  background: var(--color-surface-bright);
   color: var(--color-cream);
-  border: 2px solid var(--color-celo-forest);
-  box-shadow: 0 6px 0 #0d0a12;
-}
-
-.arcade-btn-secondary:hover {
-  box-shadow: 0 4px 0 #0d0a12;
-}
-
-.arcade-btn-secondary:active {
-  box-shadow: 0 0 0 #0d0a12;
-}
-
-.arcade-btn-locked {
-  background: #1a1024;
-  color: #655947;
-  border: 2px solid var(--color-border, #2d2440);
-  box-shadow: 0 6px 0 #0d0a12;
-  cursor: not-allowed;
   opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: var(--press-shadow-md);
+  border-color: var(--color-border);
 }
 
-.arcade-btn-locked:hover {
+/* Secondary: yellow accent (Celo identity drives highlight). */
+.arcade-btn-secondary {
+  background: var(--color-surface-bright);
+  color: var(--color-cream);
+  border-color: var(--color-celo-yellow);
+  box-shadow: 6px 6px 0 #2a2a16;
+}
+.arcade-btn-secondary:hover { box-shadow: 8px 8px 0 #2a2a16; transform: translate(-2px,-2px); }
+.arcade-btn-secondary:active { box-shadow: 2px 2px 0 #2a2a16; transform: translate(4px,4px); }
+
+/* Tertiary: ink-edge link-like control. */
+.arcade-btn-tertiary {
+  background: transparent;
+  color: var(--color-cream);
+  border-color: var(--color-border-strong);
+  box-shadow: none;
+  min-height: 36px;
+}
+.arcade-btn-tertiary:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
   transform: none;
-  box-shadow: 0 6px 0 #0d0a12;
+  box-shadow: none;
+}
+.arcade-btn-tertiary:active {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
+/* Destructive. */
+.arcade-btn-destructive {
+  background: var(--color-danger);
+  color: #fff;
+  border-color: var(--color-ink);
+  box-shadow: var(--shadow-arcade-btn);
+}
+.arcade-btn-destructive:hover { box-shadow: var(--press-shadow-lg); }
+.arcade-btn-destructive:active { box-shadow: 2px 2px 0 var(--color-arcade-shadow); }
+
+/* Locked (intentional, not mere opacity). */
+.arcade-btn-locked {
+  background: var(--color-surface-bright);
+  color: var(--color-cream);
+  border-color: var(--color-border);
+  box-shadow: var(--press-shadow-md);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+.arcade-btn-locked:hover,
+.arcade-btn-locked:active {
+  transform: none;
+  box-shadow: var(--press-shadow-md);
+}
+
+/* Legacy accent variant — retinted Sega. */
 .arcade-btn-accent {
-  background: #0d1a30;
-  color: #7CC0FF;
-  border: 2px solid #7CC0FF44;
-  box-shadow: 0 6px 0 #060d1a;
+  background: var(--color-surface);
+  color: var(--color-secondary);
+  border-color: var(--color-celo-yellow);
+  box-shadow: 6px 6px 0 #18180a;
 }
+.arcade-btn-accent:hover { box-shadow: 8px 8px 0 #18180a; transform: translate(-2px,-2px); }
+.arcade-btn-accent:active { box-shadow: 2px 2px 0 #18180a; transform: translate(4px,4px); }
 
-.arcade-btn-accent:hover {
-  box-shadow: 0 4px 0 #060d1a;
+/* Loading: preserve width, pixel prompt overlay. */
+.arcade-btn.is-loading {
+  cursor: progress;
+  color: transparent;
 }
-
-.arcade-btn-accent:active {
-  box-shadow: 0 0 0 #060d1a;
-}
-
-/* ── Section Machine Labels ───────────────────────── */
-
-.machine-label {
-  display: inline-block;
-  padding: 8px 16px;
-  border: 2px solid var(--color-border, #2d2440);
-  background: #120b1a;
-  box-shadow: 4px 4px 0 var(--color-celo-yellow);
+.arcade-btn.is-loading::after {
+  content: "LOADING…";
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-primary);
   font-family: var(--font-arcade);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-cream);
+  letter-spacing: 0.08em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .arcade-btn.is-loading::after { animation: blink 1.2s steps(2, end) infinite; }
 }
 
-/* ── Crisp Pixel Typography ───────────────────────── */
+/* ── Sega panels (hard-edged, 0px radius) ─────────── */
 
-.pixel-title {
-  font-family: 'Silkscreen', monospace;
-  font-size: 32px; /* fixed integer */
-  line-height: 1.2;
-  letter-spacing: 0;
-  color: var(--color-cream);
+.sega-panel {
+  background: var(--color-surface);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    4px 4px 0 var(--color-arcade-shadow);
+  padding: 16px;
+  position: relative;
+}
+
+/* Featured: rainbow-ring cabinet-trim. Reserve margin so trim doesn't collide. */
+.sega-panel-featured {
+  background: var(--color-surface-bright);
+  box-shadow:
+    4px 4px 0 var(--color-cabinet-trim-1),
+    8px 8px 0 var(--color-cabinet-trim-2),
+    12px 12px 0 var(--color-arcade-shadow);
+}
+
+.sega-panel-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.sega-panel-locked {
+  opacity: 0.85;
+  border-color: var(--color-border);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    3px 3px 0 var(--color-border);
+}
+
+.sega-panel-interactive {
+  transition:
+    transform var(--anim-base) var(--anim-ease),
+    border-color var(--anim-base) ease,
+    box-shadow var(--anim-base) ease;
+}
+.sega-panel-interactive:hover {
+  transform: translate(-2px, -2px);
+  border-color: var(--color-primary);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    6px 6px 0 var(--color-arcade-shadow);
+}
+
+.sega-card-stats {
+  background: var(--color-surface-bright);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-panel);
+  padding: 12px 16px;
+  box-shadow: 3px 3px 0 var(--color-arcade-shadow);
+}
+
+.sega-score-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-arcade);
+  font-size: 17px;
+}
+.sega-score-row:last-child { border-bottom: 0; }
+.sega-score-row:hover { background: rgba(255, 255, 255, 0.04); }
+
+.sega-score-row--current {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: -2px;
+  background: rgba(255, 218, 20, 0.08);
+  border-bottom-color: transparent;
+}
+
+/* ── Cabinet screen (flat framed — in-game canvas frame) ── */
+
+.sega-screen {
+  background: #050308;
+  border: 4px solid var(--color-ink);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 25px rgba(0, 0, 0, 0.6),
+    6px 6px 0 var(--color-arcade-shadow);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  padding: 12px;
+}
+
+/* Marquee strip. */
+.sega-marquee {
+  background: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-panel);
+  padding: 8px 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sega-marquee::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 218, 20, 0.12), transparent);
+    transform: translateX(-100%);
+    animation: marquee-sweep 4s linear infinite;
+  }
+}
+@keyframes marquee-sweep {
+  0%   { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* ── Pixel typography (VT323 voice) ─────────────────── */
+
+.pixel-title,
+.pixel-subtitle {
+  font-family: var(--font-arcade);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   -webkit-font-smoothing: none;
   font-smooth: never;
   text-rendering: optimizeSpeed;
-  text-shadow: 3px 3px 0 #476520;
-  transform: none;
-  filter: none;
 }
 
+.pixel-title {
+  font-size: 35px;
+  line-height: 1.05;
+  color: var(--color-secondary);
+  text-shadow: 3px 3px 0 var(--color-ink), 0 0 12px rgba(255, 218, 20, 0.18);
+}
 @media (min-width: 640px) {
   .pixel-title {
     font-size: 48px;
-    text-shadow: 4px 4px 0 #476520;
+    text-shadow: 4px 4px 0 var(--color-ink), 0 0 16px rgba(255, 218, 20, 0.2);
   }
 }
 
 .pixel-subtitle {
-  font-family: 'Silkscreen', monospace;
-  font-size: 24px; /* fixed integer */
-  line-height: 1.2;
-  letter-spacing: 0;
+  font-size: 27px;
+  line-height: 1.1;
   color: var(--color-primary);
-  -webkit-font-smoothing: none;
-  font-smooth: never;
-  text-rendering: optimizeSpeed;
-  text-shadow: 2px 2px 0 #476520;
+  text-shadow: 2px 2px 0 var(--color-ink), 0 0 10px rgba(69, 2, 255, 0.3);
 }
 
-@media (min-width: 640px) {
-  .pixel-subtitle {
-    font-size: 32px;
-  }
-}
-
-/* ── 8-bit Divider ────────────────────────────────── */
-
+/* 8-bit divider */
 .pixel-divider {
   height: 4px;
   background: repeating-linear-gradient(
     90deg,
-    #FCFF52 0 16px,
+    var(--color-celo-yellow) 0 16px,
     transparent 16px 24px,
-    #476520 24px 40px,
+    var(--color-celo-forest) 24px 40px,
     transparent 40px 48px
   );
   margin: 12px 0;
 }
 
-/* ── Game Preview Boxes ───────────────────────────── */
-
+/* Game preview boxes (used in featured card). Retinted. */
 .game-preview {
-  height: 100px;
-  margin: 12px 0;
+  height: 100%;
+  min-height: 120px;
+  margin: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    #0d0816;
+    #050308;
   background-size: 14px 14px;
   image-rendering: pixelated;
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 0;
 }
+.game-preview .pixel { position: absolute; border-radius: 0; }
 
-.game-preview .pixel {
-  position: absolute;
-  border-radius: 2px;
-}
-
-/* ── Cartridge Cards ──────────────────────────────── */
+/* ── Cartridge cards — alias to sega-panel (keeps call-sites working) ── */
 
 .cartridge {
-  border-radius: 8px;
-  border: 2px solid rgba(252, 255, 82, 0.3);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)),
-    #151020;
+  border-radius: var(--radius-panel);
+  border: 2px solid rgba(255, 218, 20, 0.4);
+  background: var(--color-surface);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 8px 0 rgba(0, 0, 0, 0.5);
+    6px 6px 0 var(--color-arcade-shadow);
   overflow: hidden;
-  transition: transform var(--anim-base) ease, box-shadow var(--anim-base) ease;
+  transition:
+    transform var(--anim-base) var(--anim-ease),
+    box-shadow var(--anim-base) ease,
+    border-color var(--anim-base) ease;
 }
-
 .cartridge:hover {
-  transform: translateY(-4px);
+  transform: translate(-2px, -2px);
+  border-color: var(--color-primary);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 12px 0 rgba(0, 0, 0, 0.5);
+    8px 8px 0 var(--color-arcade-shadow);
 }
-
 .cartridge-strip {
   display: block;
   height: 8px;
   background: repeating-linear-gradient(
     90deg,
-    #FCFF52 0 12px,
-    #1a1024 12px 18px
+    var(--color-celo-yellow) 0 12px,
+    var(--color-surface) 12px 18px
   );
 }
-
 .cartridge-locked {
-  border-color: #2d2440;
-  opacity: 0.75;
+  border-color: var(--color-border);
+  opacity: 0.85;
 }
-
 .cartridge-locked:hover {
   transform: none;
+  border-color: var(--color-border);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 8px 0 rgba(0, 0, 0, 0.5);
+    3px 3px 0 var(--color-border);
 }
+.cartridge-beta { border-color: rgba(124, 192, 255, 0.4); }
 
-.cartridge-beta {
-  border-color: rgba(124, 192, 255, 0.35);
-}
-
-/* ── Status Lights ────────────────────────────────── */
+/* ── Status lights (always paired with a text label, never color-only) ── */
 
 .status-light {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  box-shadow: 0 0 6px currentColor;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--color-ink);
+  vertical-align: middle;
 }
+.status-light-live  { background: var(--color-success); box-shadow: 0 0 6px var(--color-success); }
+.status-light-beta  { background: var(--color-primary); box-shadow: 0 0 6px var(--color-primary); }
+.status-light-soon  { background: var(--color-border); box-shadow: none; }
+.status-light-warn  { background: var(--color-warning); box-shadow: 0 0 6px var(--color-warning); }
+.status-light-error { background: var(--color-danger); box-shadow: 0 0 6px var(--color-danger); }
 
-.status-light-live {
-  background: #56DF7C;
-  color: #56DF7C;
-  animation: blink 2s ease-in-out infinite;
+@media (prefers-reduced-motion: no-preference) {
+  .status-light-live,
+  .status-light-beta,
+  .status-light-warn,
+  .status-light-error {
+    animation: blink 2s ease-in-out infinite;
+  }
 }
-
-.status-light-soon {
-  background: #655947;
-  color: #655947;
-}
-
-.status-light-beta {
-  background: #7CC0FF;
-  color: #7CC0FF;
-  animation: blink 2s ease-in-out infinite;
-}
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50%      { opacity: 0.35; }
 }
 
-/* ── Hardware Display Chips ───────────────────────── */
+/* ── Machine label (section header chip) ───────────── */
+
+.machine-label {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 2px solid var(--color-ink);
+  background: var(--color-surface-bright);
+  box-shadow: 3px 3px 0 var(--color-secondary);
+  font-family: var(--font-arcade);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-cream);
+}
+.machine-label--yellow {
+  box-shadow: 3px 3px 0 var(--color-celo-yellow);
+}
+
+/* ── Hardware chip / HUD chip ──────────────────────── */
 
 .hw-chip {
-  border-radius: 4px;
-  border: 1px solid #2d2440;
-  background: #120b1a;
-  font-family: var(--font-mono);
-  font-size: 11px;
+  border-radius: var(--radius-chip);
+  border: 2px solid var(--color-ink);
+  background: var(--color-surface-bright);
+  font-family: var(--font-arcade);
+  font-size: 13px;
   padding: 4px 10px;
-  box-shadow: inset 0 0 12px rgba(71, 101, 32, 0.08);
-  color: #E7E3D4;
+  box-shadow: 2px 2px 0 var(--color-arcade-shadow);
+  color: var(--color-cream);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* ── Touch targets & Interactive Safe Zones ────────── */
+.sega-hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-chip);
+  border: 2px solid var(--color-ink);
+  background: var(--color-surface-bright);
+  font-family: var(--font-arcade);
+  font-size: 15px;
+  padding: 6px 12px;
+  box-shadow: 3px 3px 0 var(--color-arcade-shadow);
+  color: var(--color-cream);
+}
 
+/* ── Sega input ────────────────────────────────────── */
+
+.sega-input {
+  width: 100%;
+  background: var(--color-surface-bright);
+  color: var(--color-cream);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-panel);
+  padding: 12px 14px;
+  font-family: var(--font-arcade);
+  font-size: 17px;
+  line-height: 1;
+  box-shadow: 2px 2px 0 var(--color-arcade-shadow);
+  transition: border-color var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+.sega-input::placeholder { color: rgba(231, 227, 212, 0.35); }
+.sega-input:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+  border-color: var(--color-secondary);
+}
+.sega-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: 2px 2px 0 var(--color-danger);
+}
+
+/* ── Sega badges (marker + label, never color-only) ── */
+
+.sega-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-chip);
+  background: var(--color-surface-bright);
+  font-family: var(--font-arcade);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  box-shadow: 2px 2px 0 var(--color-arcade-shadow);
+}
+.sega-badge--live     { border-color: var(--color-success); }
+.sega-badge--beta     { border-color: var(--color-primary); }
+.sega-badge--soon     { border-color: var(--color-border); color: var(--color-cream); }
+.sega-badge--locked   { border-color: var(--color-border); }
+.sega-badge--verified { border-color: var(--color-success); color: var(--color-success); }
+.sega-badge--warning  { border-color: var(--color-warning); }
+.sega-badge--danger   { border-color: var(--color-danger); color: var(--color-danger); }
+
+/* Rank medals for the leaderboard (replaces 👑🥈🥉). */
+.sega-badge--rank-1 { border-color: var(--color-rank-1); color: var(--color-rank-1); }
+.sega-badge--rank-2 { border-color: var(--color-rank-2); color: var(--color-cream); }
+.sega-badge--rank-3 { border-color: var(--color-rank-3); color: var(--color-rank-3); }
+
+/* ── Sega menu item (active marker beyond color) ───── */
+
+.sega-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding: 10px 6px;
+  font-family: var(--font-arcade);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(231, 227, 212, 0.55);
+  text-decoration: none;
+  border-top: 3px solid transparent;
+  position: relative;
+  transition: color var(--anim-fast) ease, background var(--anim-fast) ease;
+}
+.sega-menu-item:hover { color: var(--color-cream); }
+.sega-menu-item.is-active {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-top-color: var(--color-secondary);
+}
+.sega-menu-item.is-active[data-active-marker]::after {
+  content: attr(data-active-marker);
+  position: absolute;
+  top: -3px;
+  right: 8px;
+  font-size: 11px;
+  color: var(--color-secondary);
+}
+
+/* ── Tech label / value (mono metadata, 13px) ──────── */
+
+.tech-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-tertiary);
+}
+.tech-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-cream);
+}
+
+/* Touch + focus base */
 button,
 [role="button"],
 a {
   touch-action: manipulation;
+  outline-color: var(--color-secondary);
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+.sega-menu-item:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+/* On yellow/white surfaces the arcade-blue ring reads better. */
+.sega-panel-paper button:focus-visible,
+.sega-panel-paper a:focus-visible,
+.sega-panel-paper .sega-input:focus-visible {
   outline-color: var(--color-primary);
 }
 
-/* Focus styles for keyboard navigation */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
-/* ── Arcade Cabinet 3D System ─────────────────────── */
-
-.cabinet-container {
-  perspective: 1200px;
-  width: 100%;
-  max-width: 340px;
-  margin: 0 auto;
-}
-
-/* On small mobile, widen the cabinet and reduce decorative padding */
-@media (max-width: 480px) {
-  .cabinet-container {
-    max-width: 100%;
-  }
-
-  .cabinet {
-    padding: 8px !important;
-  }
-
-  /* Hide decorative controls on small mobile — saves 88px vertical space */
-  .cabinet-controls {
-    display: none !important;
-  }
-
-  .cabinet-marquee {
-    padding: 6px 10px !important;
-  }
-
-  .cabinet-screen-bezel {
-    padding: 8px !important;
-  }
-
-  .arcade-btn {
-    padding: 12px 16px !important;
-    font-size: 10px !important;
-  }
-}
-
-.cabinet {
-  position: relative;
-  background: linear-gradient(135deg, #2c1a4d 0%, #170e2b 100%); /* Premium dark purple gradient */
-  border-radius: 16px;
-  padding: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    -8px 0 0 #0d0617, /* Left side deep shadow */
-    8px 0 0 #4f3385,  /* Right side cyber highlight */
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    inset 0 0 25px rgba(252, 255, 82, 0.04);
-  transform: rotateX(6deg);
-  transition: transform var(--anim-base) var(--anim-ease), box-shadow var(--anim-base) ease, border-color var(--anim-base) ease;
-}
-
-/* Interactive Cabinet Hover Effect */
-.cabinet-container:hover .cabinet {
-  transform: rotateX(2deg) rotateY(-1deg) translateY(-8px);
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 
-    -10px 0 0 #0d0617,
-    10px 0 0 #4f3385,
-    0 30px 50px rgba(0, 240, 255, 0.15),
-    inset 0 0 25px rgba(0, 240, 255, 0.08);
-}
-
-.cabinet-marquee {
-  background: #090510;
-  padding: 10px;
-  border: 2px solid #4f3385;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
-}
-
-.cabinet-marquee::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-  transform: translateX(-100%);
-  animation: sweep 4s infinite linear;
-}
-
-@keyframes sweep {
-  0% { transform: translateX(-100%); }
-  50%, 100% { transform: translateX(100%); }
-}
-
-.cabinet-screen-bezel {
-  background: #050308;
-  padding: 14px;
-  border-radius: 10px;
-  border: 4px solid #0d0617;
-  box-shadow: 
-    inset 0 0 25px rgba(0, 0, 0, 0.9),
-    0 0 15px rgba(0, 240, 255, 0.05);
-  position: relative;
-}
-
-.cabinet-screen {
-  aspect-ratio: 4/3;
-  background: #0d0e12;
-  position: relative;
-  overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Glass Screen Reflection Overlay */
-.cabinet-screen::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 50%);
-  transform: rotate(-15deg) translate(-30%, -30%);
-  pointer-events: none;
-  z-index: 10;
-}
-
-.cabinet-controls {
-  margin-top: 18px;
-  background: #170e28;
-  padding: 16px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
-    0 6px 0 #090510,
-    inset 0 0 15px rgba(0, 0, 0, 0.5);
-}
-
-.joystick-base {
-  width: 36px;
-  height: 36px;
-  background: #090510;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
-}
-
-.joystick {
-  width: 20px;
-  height: 20px;
-  background: radial-gradient(circle at 35% 35%, #ff2e93, #b50050);
-  border-radius: 50%;
-  box-shadow: 
-    0 6px 0 #6e002e,
-    0 0 8px rgba(247, 37, 133, 0.4);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.cabinet-container:hover .joystick {
-  transform: translate(2px, -2px);
-  animation: joystick-wiggle 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes joystick-wiggle {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(3px, -2px); }
-  50% { transform: translate(-2px, 3px); }
-  75% { transform: translate(1px, -3px); }
-  100% { transform: translate(-3px, 1px); }
-}
-
-.control-btn-group {
-  display: flex;
-  gap: 6px;
-}
-
-.control-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  box-shadow: 
-    0 3px 0 rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-  cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.cabinet-container:hover .control-btn {
-  animation: button-press 2s infinite alternate;
-}
-
-.cabinet-container:hover .control-btn:nth-child(2) {
-  animation-delay: 0.3s;
-}
-
-.cabinet-container:hover .control-btn:nth-child(3) {
-  animation-delay: 0.6s;
-}
-
-@keyframes button-press {
-  0%, 80% { transform: translateY(0); box-shadow: 0 3px 0 rgba(0,0,0,0.6); }
-  90%, 100% { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.6); }
-}
-
-.control-btn.yellow { background: radial-gradient(circle at 30% 30%, #fcff8c, #d5c800); }
-.control-btn.red { background: radial-gradient(circle at 30% 30%, #ff529f, #cf0056); }
-.control-btn.blue { background: radial-gradient(circle at 30% 30%, #5ceaff, #009cb8); }
-
-/* ── Glassmorphism ────────────────────────────────── */
-
-.glass-panel {
-  background: rgba(16, 19, 26, 0.75);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  box-shadow: 
-    0 8px 32px 0 rgba(0, 0, 0, 0.37),
-    inset 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
-}
-
-.glass-panel-interactive {
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.glass-panel-interactive:hover {
-  border-color: rgba(0, 240, 255, 0.25);
-  box-shadow: 
-    0 12px 30px rgba(0, 240, 255, 0.05),
-    inset 0 0 12px rgba(0, 240, 255, 0.03);
-}
-
-/* ── Typography Utilities & Neon Shadows ───────────── */
-
-.pixel-title {
-  font-family: var(--font-arcade);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-celo-yellow);
-  text-shadow: 
-    3px 3px 0 #120b1a,
-    0 0 12px rgba(252, 255, 82, 0.25);
-}
-
-.pixel-subtitle {
-  font-family: var(--font-pixel);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-primary);
-  text-shadow: 
-    2px 2px 0 #120b1a,
-    0 0 10px rgba(0, 240, 255, 0.25);
-}
-
-.text-glow-primary {
-  text-shadow: var(--shadow-neon-primary);
-}
-
-.text-glow-success {
-  text-shadow: var(--shadow-neon-success);
-}
-
-.text-glow-danger {
-  text-shadow: var(--shadow-neon-danger);
-}
-
-.tech-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-tertiary);
-}
-
-/* ── Status Lights ── */
-.status-light {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.status-light-live { 
-  color: var(--color-success); 
-  background: currentColor; 
-  box-shadow: 0 0 8px var(--color-success);
-}
-.status-light-beta { 
-  color: var(--color-primary); 
-  background: currentColor; 
-  box-shadow: 0 0 8px var(--color-primary);
-}
-.status-light-soon { 
-  color: #554a3a; 
-  background: currentColor; 
-  box-shadow: none;
-}
-
-/* ── Image Rendering Utilities ── */
+/* ── Image rendering ── */
 .image-pixelated {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-.touch-none {
-  touch-action: none;
-}
+.touch-none { touch-action: none; }
 
-/* Safe area bottom padding for mobile browsers and MiniPay */
-.pb-safe {
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
-}
+/* Safe-area bottom padding for mobile + MiniPay */
+.pb-safe { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
 
-/* Neon Focus Border for Input forms */
-.focus-neon:focus {
-  border-color: var(--color-primary);
-  box-shadow: 
-    0 0 0 2px rgba(0, 240, 255, 0.15),
-    0 0 10px rgba(0, 240, 255, 0.1);
-}
-
+/* Neon text glow utilities (kept for back-compat). */
+.text-glow-primary { text-shadow: var(--shadow-neon-primary); }
+.text-glow-success { text-shadow: var(--shadow-neon-success); }
+.text-glow-danger  { text-shadow: var(--shadow-neon-danger); }

@@ -11,6 +11,15 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
+
+    /* Map game-engine import specifiers to the local workspace package source
+       (mirrors resolve.alias in vite.config.ts). Both specifiers resolve to
+       the same local package since the bare imports/UFO names don't match the
+       actual publishing name (@cryptoflops/celo-atari-games) and no dist/ exists. */
+    "paths": {
+      "@celo-atari-games/gas-gobbler-engine": ["../../packages/game-engine/src/index.ts"],
+      "@celo-arcade/game-engine": ["../../packages/game-engine/src/index.ts"]
+    },
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",

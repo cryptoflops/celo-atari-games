@@ -1,35 +1,8 @@
-import React from 'react';
+import type { FC } from 'react';
 import { useLeaderboard } from '../hooks/useLeaderboard';
-
-const PodiumEntry: React.FC<{ rank: number, address: string, score: number, username?: string }> = ({ rank, address, score, username }) => {
-  const colors = {
-    1: 'border-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.2)] bg-[#FFD700]/5', // Gold
-    2: 'border-[#C0C0C0] shadow-[0_0_15px_rgba(192,192,192,0.15)] bg-[#C0C0C0]/5', // Silver
-    3: 'border-[#CD7F32] shadow-[0_0_15px_rgba(205,127,50,0.15)] bg-[#CD7F32]/5', // Bronze
-  };
-
-  const badges = {
-    1: '👑',
-    2: '🥈',
-    3: '🥉',
-  };
-
-  return (
-    <div className={`flex flex-col items-center p-5 rounded-2xl glass-panel border-2 transition-all duration-300 hover:scale-105 ${
-      rank === 1 ? 'scale-110 -translate-y-4 z-10' : 'scale-95'
-    } ${colors[rank as keyof typeof colors] || 'border-white/10'}`}>
-      <div className="text-3xl mb-1 filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
-        {badges[rank as keyof typeof badges] || '👤'}
-      </div>
-      <div className="font-arcade text-[8px] text-white/40 mb-2">RANK {rank}</div>
-      <div className="font-mono text-[10px] text-white/90 font-bold mb-1 truncate w-24 text-center">
-        {username || `${address.slice(0, 6)}...${address.slice(-4)}`}
-      </div>
-      <div className="font-bold text-success text-glow-success text-sm font-mono">{score.toLocaleString()}</div>
-      <div className="tech-label text-[7px] mt-1.5 text-white/30">PTS</div>
-    </div>
-  );
-};
+import { useWallet } from '../hooks/useWallet';
+import { Panel } from './Card';
+import { RankBadge } from './Badge';
 
 interface LeaderboardEntry {
   address: string;
@@ -37,79 +10,151 @@ interface LeaderboardEntry {
   username?: string;
 }
 
-export const LeaderboardTable: React.FC = () => {
-  const { data, isLoading, isError } = useLeaderboard();
-
-  if (isLoading) return <div className="text-center tech-label py-16 animate-pulse text-primary text-glow-primary">Loading Chain State...</div>;
-  if (isError) return <div className="text-center text-danger py-16 tech-label text-glow-danger">Error: Registry Mismatch</div>;
-
-  const leaderboard: LeaderboardEntry[] = data?.leaderboard || [];
-  const topThree = leaderboard.slice(0, 3);
-
-  return (
-    <div className="w-full max-w-2xl mx-auto animate-in fade-in duration-500">
-
-      {/* Podium */}
-      {topThree.length > 0 && (
-        <div className="flex justify-center items-end gap-3 mb-16 mt-8">
-          {topThree[1] && <PodiumEntry rank={2} {...topThree[1]} />}
-          {topThree[0] && <PodiumEntry rank={1} {...topThree[0]} />}
-          {topThree[2] && <PodiumEntry rank={3} {...topThree[2]} />}
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="glass-panel overflow-hidden border border-white/10 shadow-xl">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-white/5 border-b border-white/10">
-              <tr>
-                <th className="px-6 py-4 tech-label text-white/40">Rank</th>
-                <th className="px-6 py-4 tech-label text-white/40">Player</th>
-                <th className="px-6 py-4 tech-label text-white/40 text-right">Score</th>
-                <th className="px-6 py-4 tech-label text-white/40 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {leaderboard.map((entry, index: number) => (
-                <tr key={index} className="hover:bg-white/5 transition-colors group">
-                  <td className="px-6 py-4 text-white/50 font-mono text-xs font-bold">#{index + 1}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded bg-surface-bright flex items-center justify-center text-sm border border-white/10 shadow-sm">
-                        {index === 0 ? '🏆' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤'}
-                      </div>
-                      <span className="font-mono text-sm text-white/90 group-hover:text-primary transition-colors">
-                        {entry.username || `${entry.address.slice(0, 6)}...${entry.address.slice(-4)}`}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-bold text-success text-glow-success font-mono text-sm">{entry.score.toLocaleString()}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <div className="flex items-center gap-1.5 text-success">
-                        <span className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_6px_var(--color-success)]" />
-                        <span className="text-[9px] font-bold uppercase tracking-tight text-glow-success">Verified</span>
-                      </div>
-                      <span className="text-[7px] font-mono text-white/30">EIP-712</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {leaderboard.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center tech-label text-white/30">
-                    No records found in registry
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
+const PlayerLabel: FC<{ entry: LeaderboardEntry }> = ({ entry }) => {
+  const name = entry.username || `${entry.address.slice(0, 6)}…${entry.address.slice(-4)}`;
+  return <span className="tech-value text-cream" style={{ fontSize: '15px' }}>{name}</span>;
 };
 
+const ScoreValue: FC<{ score: number }> = ({ score }) => (
+  <span
+    className="tech-value font-bold"
+    style={{
+      fontSize: '15px',
+      textAlign: 'right',
+      fontVariantNumeric: 'tabular-nums',
+      color: 'var(--color-success)',
+    }}
+  >
+    {score.toLocaleString()}
+  </span>
+);
+
+const ScoreRow: FC<{
+  rank: number;
+  entry: LeaderboardEntry;
+  isCurrent?: boolean;
+}> = ({ rank, entry, isCurrent }) => (
+  <div className={`sega-score-row ${isCurrent ? 'sega-score-row--current' : ''}`}>
+    <span style={{ minWidth: '52px' }}>
+      <RankBadge rank={rank} />
+    </span>
+    <PlayerLabel entry={entry} />
+    <ScoreValue score={entry.score} />
+    <span className="flex items-center gap-1.5">
+      <span aria-hidden="true" className="status-light status-light-live" />
+      <span className="tech-label text-success" style={{ fontSize: '13px' }}>VERIFIED</span>
+    </span>
+  </div>
+);
+
+/** Skeleton row preserves layout shape while scores load. */
+const SkeletonRow: FC = () => (
+  <div className="sega-score-row" style={{ opacity: 0.45 }} aria-hidden="true">
+    <span style={{ minWidth: '52px' }}>
+      <span className="sega-badge sega-badge--soon" style={{ width: '48px' }}>
+        <span className="animate-pulse" style={{ display: 'inline-block', minWidth: '24px' }}>—</span>
+      </span>
+    </span>
+    <span className="tech-value text-white/40" style={{ fontSize: '15px' }}>loading…</span>
+    <span className="tech-value text-white/40" style={{ fontSize: '15px', textAlign: 'right' }}>········</span>
+    <span className="tech-label text-white/30" style={{ fontSize: '13px' }}>—</span>
+  </div>
+);
+
+export const LeaderboardTable: FC = () => {
+  // useLeaderboard returns a TanStack Query result — isLoading/isError/data/refetch available.
+  const { data, isLoading, isError, refetch } = useLeaderboard();
+  const { address } = useWallet();
+
+  const leaderboard: LeaderboardEntry[] = (data?.leaderboard as LeaderboardEntry[] | undefined) ?? [];
+
+  // Find the current player's ranking if they appear in the registry.
+  const currentPlayerRank = address
+    ? leaderboard.findIndex((e) => e.address.toLowerCase() === address.toLowerCase()) + 1
+    : 0;
+
+  // ── Loading state: preserve layout shape ──
+  if (isLoading) {
+    return (
+      <Panel className="w-full" aria-busy="true" role="status">
+        <p className="tech-label text-white/55 mb-3 text-center" style={{ fontSize: '13px' }}>
+          Loading scores…
+        </p>
+        <div className="flex flex-col">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+      </Panel>
+    );
+  }
+
+  // ── Error state: scoreboard shell preserved, retry action given ──
+  if (isError) {
+    return (
+      <Panel variant="locked" className="w-full" role="alert">
+        <p className="tech-label text-danger font-bold mb-1" style={{ fontSize: '13px' }}>✕ Contract read failed</p>
+        <p className="text-white/70 mb-4" style={{ fontSize: '15px', lineHeight: 1.35 }}>
+          Could not read the score registry. Check your network connection and try again.
+        </p>
+        <button type="button" onClick={() => refetch()} className="arcade-btn" style={{ fontSize: '15px' }}>
+          Try again
+        </button>
+      </Panel>
+    );
+  }
+
+  // ── Empty state ──
+  if (leaderboard.length === 0) {
+    return (
+      <Panel className="w-full text-center">
+        <h2 className="font-arcade text-cream mb-2" style={{ fontSize: '21px' }}>No scores yet</h2>
+        <p className="text-white/65 mb-5 mx-auto" style={{ fontSize: '15px', lineHeight: 1.35, maxWidth: '36ch' }}>
+          Be the first player to submit a verified on-chain score to the Celo registry.
+        </p>
+        <a href="/play" className="arcade-btn arcade-btn-secondary">▶ Start a run</a>
+      </Panel>
+    );
+  }
+
+  // ── Ranked scoreboard ──
+  return (
+    <Panel className="w-full" aria-label="Scoreboard">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="tech-label text-white/45" style={{ fontSize: '13px' }}>All-time · Gas Gobbler</h2>
+        <span className="tech-label text-white/45" style={{ fontSize: '13px' }}>{leaderboard.length} entries</span>
+      </div>
+
+      <div className="flex flex-col">
+        {leaderboard.map((entry, i) => (
+          <ScoreRow
+            key={`${entry.address}-${i}`}
+            rank={i + 1}
+            entry={entry}
+            isCurrent={currentPlayerRank === i + 1}
+          />
+        ))}
+      </div>
+
+      {/* Connected-but-unranked callout */}
+      {address && currentPlayerRank === 0 && (
+        <div className="mt-4 pt-3 border-t border-border">
+          <div className="sega-score-row sega-score-row--current" aria-label="Your rank: unranked">
+            <span style={{ minWidth: '52px' }}>
+              <span className="sega-badge sega-badge--soon">#—</span>
+            </span>
+            <span className="tech-value text-cream" style={{ fontSize: '15px' }}>
+              {address.slice(0, 6)}…{address.slice(-4)}
+              <span className="tech-label text-white/55 ml-2" style={{ fontSize: '13px' }}>(you)</span>
+            </span>
+            <span className="tech-value text-white/45" style={{ fontSize: '15px', textAlign: 'right' }}>no score yet</span>
+            <span className="tech-label text-white/45" style={{ fontSize: '13px' }}>UNRANKED</span>
+          </div>
+          <p className="text-white/55 mt-2 text-center" style={{ fontSize: '13px' }}>
+            Submit a verified run to claim your spot.
+          </p>
+        </div>
+      )}
+    </Panel>
+  );
+};
