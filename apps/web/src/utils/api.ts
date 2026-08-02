@@ -1,6 +1,10 @@
 import type { FrameInput } from '@celo-atari-games/gas-gobbler-engine';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Production default is the deployed game-API Worker. Override locally with
+// VITE_API_URL=http://localhost:3000 (or your `wrangler dev` port) via a
+// repo-root .env (Web app's vite config sets envDir: '../../').
+const API_URL =
+  import.meta.env.VITE_API_URL || 'https://celo-atari-games-api.cryptoflops-00.workers.dev';
 
 export const api = {
   async createSession(player: string): Promise<{ sessionId: string; seed: number }> {
